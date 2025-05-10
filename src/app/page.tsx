@@ -5,8 +5,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AppUser } from "@/types/user";
-import { useState, useEffect } from "react";
 
 
 export default function Home() {
@@ -15,11 +13,6 @@ export default function Home() {
     <main className="p-4">
       <h1 className="text-2xl font-bold mb-4">Usuários</h1>
 
-      {/* <ul>
-        {users.map((user, index) => (
-          <li key={user.id + index}>👤 {user.name}</li>
-        ))}
-      </ul> */}
       <div className="p-8 rounded-2xl shadow-lg">
         <h1 className="text-2xl font-bold mb-4">Hello, World!</h1>
             <Card className="w-[350px]">
