@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ModeToggle } from "@/components/ui/modeToggle";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
@@ -12,7 +13,7 @@ export default function Home() {
   return (
     <main className="p-4">
       <h1 className="text-2xl font-bold mb-4">Usuários</h1>
-
+    <ModeToggle />
       <div className="p-8 rounded-2xl shadow-lg">
         <h1 className="text-2xl font-bold mb-4">Hello, World!</h1>
             <Card className="w-[350px]">
