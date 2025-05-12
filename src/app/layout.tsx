@@ -1,13 +1,17 @@
-import type { Metadata } from "next";
-import { Lato } from "next/font/google";
 import "./globals.css";
+
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+
+import { AppSidebar } from "@/components/app-sidebar";
+import { Lato } from "next/font/google";
+import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 
 const lato = Lato({
-  weight: ['100', '300', '400', '700', '900'],
-  subsets: ['latin'],
-  variable: '--font-lato',
-})
+  weight: ["100", "300", "400", "700", "900"],
+  subsets: ["latin"],
+  variable: "--font-lato",
+});
 
 export const metadata: Metadata = {
   title: "Banko",
@@ -21,17 +25,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body
-        className={`${lato.variable} antialiased`}
-      >
-         <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-        {children}
-         </ThemeProvider>
+      <body className={`${lato.variable} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SidebarProvider>
+            <AppSidebar />
+            <main className="min-h-screen">
+              <SidebarTrigger className="ml-3 mt-3 cursor-pointer" />
+              {children}
+            </main>
+          </SidebarProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
