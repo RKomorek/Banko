@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Modal, ModalCloseButton } from "@/components/ui/modal";
 import { ModeToggle } from "@/components/ui/modeToggle";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { IUser } from "@/interfaces/users.interfaces";
@@ -70,6 +71,15 @@ export default function Home() {
             <Button>Deploy</Button>
           </CardFooter>
         </Card>
+
+         <Modal
+          trigger={<Button>Abrir Modal</Button>}
+          title="Título do Modal"
+          description="Descrição opcional do modal."
+          footer={<ModalCloseButton />}
+        >
+          <p>Conteúdo do modal aqui.</p>
+        </Modal>
       </div>
 
     </main>
