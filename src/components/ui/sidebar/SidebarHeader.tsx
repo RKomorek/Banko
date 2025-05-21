@@ -1,0 +1,1 @@
+export const SidebarHeader = () => <div className='p-4'>Header</div>;

@@ -17,7 +17,6 @@ export const metadata: Metadata = {
   title: "Banko",
   description: "Controle suas finanças!",
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,11 +32,13 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SidebarProvider>
-            <AppSidebar />
-            <main className="min-h-screen">
-              <SidebarTrigger className="ml-3 mt-3 cursor-pointer" />
-              {children}
-            </main>
+            <div className="flex h-screen w-full">
+              <AppSidebar />
+              <main className="flex-1 min-h-screen">
+                <SidebarTrigger className="ml-3 mt-3 cursor-pointer" />
+                {children}
+              </main>
+            </div>
           </SidebarProvider>
         </ThemeProvider>
       </body>

@@ -1,0 +1,1 @@
+export const SidebarSeparator = () => <hr className='my-2' />;

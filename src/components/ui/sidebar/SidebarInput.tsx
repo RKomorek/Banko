@@ -1,0 +1,1 @@
+export const SidebarInput = () => <input type='text' className='p-2 w-full' />;
