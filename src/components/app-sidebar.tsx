@@ -1,16 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  ChevronLeft,
-  Grid,
-  Home,
-  LineChart,
-  LogOut,
-  Menu,
-  Repeat,
-  Settings,
-} from "lucide-react";
+import { Grid, Home, LineChart, LogOut, Repeat, Settings } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,11 +9,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -34,16 +20,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 // Menu items
 const items = [
   { title: "Home", url: "/", icon: Home },
-  { title: "Transferências", url: "/transferencias", icon: Repeat },
-  { title: "Investimentos", url: "/investimentos", icon: LineChart },
+  { title: "Transferências", url: "/login", icon: Repeat },
+  { title: "Investimentos", url: "/register", icon: LineChart },
   { title: "Outros Serviços", url: "/servicos", icon: Grid },
 ];
 
