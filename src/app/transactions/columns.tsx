@@ -13,6 +13,16 @@ export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "date",
     header: "Data",
+    cell: ({ getValue }) => {
+      const [date, time] = (getValue() as string).split(" ");
+      return (
+        <div className="whitespace-nowrap">
+          {date}
+          <br />
+          <span className="text-muted-foreground text-xs">{time}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "description",
@@ -26,7 +36,6 @@ export const columns: ColumnDef<Transaction>[] = [
       return type === "income" ? "Entrada 💰" : "Saída 💸";
     },
   },
-
   {
     accessorKey: "amount",
     header: "Valor",

@@ -1,74 +1,80 @@
-import { Transaction } from "./types"
+export type Transaction = {
+  id: string;
+  date: string;
+  type: "income" | "expense";
+  amount: number;
+  description: string;
+};
 
 export const transactionsMock: Transaction[] = [
   {
     id: "1",
-    date: "27/05/2025",
-    type: "income",
-    amount: 3817,
-    description: "Salário"
+    date: "03/05/2025 23:29",
+    type: "expense",
+    amount: 4523,
+    description: "Salário",
   },
   {
     id: "2",
-    date: "02/04/2025",
+    date: "16/03/2025 09:55",
     type: "income",
-    amount: 4661,
-    description: "Supermercado"
+    amount: 2618,
+    description: "Supermercado",
   },
   {
     id: "3",
-    date: "05/02/2025",
-    type: "income",
-    amount: 3811,
-    description: "Transporte"
+    date: "23/02/2025 14:16",
+    type: "expense",
+    amount: 3202,
+    description: "Transporte",
   },
   {
     id: "4",
-    date: "24/02/2025",
-    type: "expense",
-    amount: 3308,
-    description: "Restaurante"
+    date: "26/02/2025 15:15",
+    type: "income",
+    amount: 1834,
+    description: "Restaurante",
   },
   {
     id: "5",
-    date: "09/03/2025",
+    date: "17/04/2025 03:01",
     type: "income",
-    amount: 256,
-    description: "Aluguel"
+    amount: 4187,
+    description: "Aluguel",
   },
   {
     id: "6",
-    date: "31/01/2025",
+    date: "10/01/2025 13:08",
     type: "income",
-    amount: 1267,
-    description: "Academia"
+    amount: 2581,
+    description: "Academia",
   },
   {
     id: "7",
-    date: "15/04/2025",
+    date: "28/05/2025 17:22",
     type: "income",
-    amount: 262,
-    description: "Farmácia"
+    amount: 4694,
+    description: "Farmácia",
   },
   {
     id: "8",
-    date: "13/05/2025",
-    type: "income",
-    amount: 1714,
-    description: "Cinema"
+    date: "10/02/2025 13:31",
+    type: "expense",
+    amount: 4233,
+    description: "Cinema",
   },
   {
     id: "9",
-    date: "13/03/2025",
+    date: "24/05/2025 13:56",
     type: "expense",
-    amount: 2444,
-    description: "Café"
+    amount: 1083,
+    description: "Café",
   },
   {
     id: "10",
-    date: "05/03/2025",
+    date: "25/03/2025 00:55",
     type: "expense",
-    amount: 4222,
-    description: "Livros"
-  }
-]
+    amount: 3937,
+    description: "Livros",
+  },
+];
