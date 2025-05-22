@@ -4,7 +4,7 @@ import { formatCurrencyBRL } from "@/lib/formatters";
 export type Transaction = {
   id: string;
   date: string;
-  type: "income" | "expense";
+  type: "boleto" | "pix" | "cartão";
   amount: number;
   description: string;
 };
@@ -33,12 +33,35 @@ export const columns: ColumnDef<Transaction>[] = [
     header: "Tipo",
     cell: ({ getValue }) => {
       const type = getValue() as string;
-      return type === "income" ? "Entrada 💰" : "Saída 💸";
+
+      const typeMap: Record<string, { label: string; icon: string }> = {
+        pix: { label: "Pix", icon: "❖" },
+        boleto: { label: "Boleto", icon: "🧾" },
+        cartao: { label: "Cartão", icon: "💳" },
+      };
+
+      const data = typeMap[type] ?? { label: type, icon: "" };
+
+      return (
+        <span className="flex items-center gap-2 font-medium">
+          <span>{data.icon}</span>
+          <span>{data.label}</span>
+        </span>
+      );
     },
   },
+
   {
     accessorKey: "amount",
     header: "Valor",
-    cell: ({ getValue }) => formatCurrencyBRL(getValue() as number),
+    cell: ({ getValue }) => {
+      const value = getValue() as number;
+      const isNegative = value < 0;
+      return (
+        <span className={isNegative ? "text-red-500" : "text-green-600"}>
+          {formatCurrencyBRL(value)}
+        </span>
+      );
+    },
   },
 ];

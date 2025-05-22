@@ -1,7 +1,7 @@
 export type Transaction = {
   id: string;
   date: string;
-  type: "income" | "expense";
+  type: "boleto" | "pix" | "cartão";
   amount: number;
   description: string;
 };
@@ -9,72 +9,72 @@ export type Transaction = {
 export const transactionsMock: Transaction[] = [
   {
     id: "1",
-    date: "03/05/2025 23:29",
-    type: "expense",
-    amount: 4523,
-    description: "Salário",
+    date: "12/03/2025 10:15",
+    type: "pix",
+    amount: 2450.5,
+    description: "Transferência recebida",
   },
   {
     id: "2",
-    date: "16/03/2025 09:55",
-    type: "income",
-    amount: 2618,
-    description: "Supermercado",
+    date: "14/03/2025 18:20",
+    type: "boleto",
+    amount: -89.9,
+    description: "Pagamento de conta",
   },
   {
     id: "3",
-    date: "23/02/2025 14:16",
-    type: "expense",
-    amount: 3202,
-    description: "Transporte",
-  },
-  {
-    id: "4",
-    date: "26/02/2025 15:15",
-    type: "income",
-    amount: 1834,
+    date: "20/03/2025 12:30",
+    type: "cartão",
+    amount: -120.0,
     description: "Restaurante",
   },
   {
+    id: "4",
+    date: "25/03/2025 09:10",
+    type: "pix",
+    amount: 300.0,
+    description: "Reembolso",
+  },
+  {
     id: "5",
-    date: "17/04/2025 03:01",
-    type: "income",
-    amount: 4187,
+    date: "01/04/2025 21:00",
+    type: "boleto",
+    amount: -200.0,
     description: "Aluguel",
   },
   {
     id: "6",
-    date: "10/01/2025 13:08",
-    type: "income",
-    amount: 2581,
-    description: "Academia",
-  },
-  {
-    id: "7",
-    date: "28/05/2025 17:22",
-    type: "income",
-    amount: 4694,
-    description: "Farmácia",
-  },
-  {
-    id: "8",
-    date: "10/02/2025 13:31",
-    type: "expense",
-    amount: 4233,
-    description: "Cinema",
-  },
-  {
-    id: "9",
-    date: "24/05/2025 13:56",
-    type: "expense",
-    amount: 1083,
+    date: "05/04/2025 08:50",
+    type: "cartão",
+    amount: -45.0,
     description: "Café",
   },
   {
+    id: "7",
+    date: "08/04/2025 11:05",
+    type: "pix",
+    amount: 150.0,
+    description: "Pix recebido",
+  },
+  {
+    id: "8",
+    date: "10/04/2025 15:30",
+    type: "boleto",
+    amount: -75.5,
+    description: "Conta de luz",
+  },
+  {
+    id: "9",
+    date: "12/04/2025 17:40",
+    type: "cartao",
+    amount: -39.9,
+    description: "Farmácia",
+  },
+  {
     id: "10",
-    date: "25/03/2025 00:55",
-    type: "expense",
-    amount: 3937,
-    description: "Livros",
+    date: "15/04/2025 13:15",
+    type: "pix",
+    amount: 500.0,
+    description: "Venda online",
   },
 ];
