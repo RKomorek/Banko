@@ -1,6 +1,8 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Grid, Home, LineChart, LogOut, Repeat, Settings } from "lucide-react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +25,9 @@ import {
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useAppContext } from "@/context/app.context";
 
 // Menu items
 const items = [
@@ -34,6 +39,24 @@ const items = [
 
 export function AppSidebar() {
   const { open, setOpen } = useSidebar();
+  const { user } = useAppContext();
+
+  const router = useRouter();
+
+  function handleLogout() {
+    // Limpa o localStorage ou sessionStorage
+    localStorage.removeItem("sb-xrnhzpiwgzhjcmyiuxfv-auth-token"); // ou "token", dependendo do que você salvou
+
+    // Redireciona o usuário
+    router.replace("/login");
+  }
+
+  useEffect(() => {
+    const session = localStorage.getItem("sb-xrnhzpiwgzhjcmyiuxfv-auth-token");
+    if (!session) {
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <TooltipProvider delayDuration={100}>
@@ -127,14 +150,13 @@ export function AppSidebar() {
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2 w-full text-left hover:bg-muted px-2 py-1.5 rounded-md">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="/avatar.png" alt="@user" />
                   <AvatarFallback>MS</AvatarFallback>
                 </Avatar>
                 {open && (
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium leading-none">Marcelo</p>
+                    {/* <p className="text-sm font-medium leading-none">{user?.name}</p> */}
                     <p className="text-xs text-muted-foreground truncate">
-                      marcelo@banko.bank
+                      {user?.email}
                     </p>
                   </div>
                 )}
@@ -145,7 +167,7 @@ export function AppSidebar() {
                 <Settings className="mr-2 h-4 w-4" />
                 Configurações
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Sair
               </DropdownMenuItem>
