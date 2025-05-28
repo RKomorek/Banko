@@ -1,8 +1,6 @@
 "use client";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Grid, Home, LineChart, LogOut, Repeat, Settings } from "lucide-react";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,9 +23,9 @@ import {
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { useAppContext } from "@/context/app.context";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 // Menu items
 const items = [
