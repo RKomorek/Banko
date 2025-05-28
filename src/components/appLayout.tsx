@@ -8,15 +8,9 @@ import { Toaster } from "@/components/ui/sonner";
 import { useAppContext } from "@/context/app.context";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-   const { user, loading } = useAppContext();
+   const { user } = useAppContext();
 
- if (loading) {
-  return (
-    <div className="h-screen w-full flex items-center justify-center">
-      <p>Carregando...</p>
-    </div>
-  );
-}
+
 
   console.log("User:", user);
 

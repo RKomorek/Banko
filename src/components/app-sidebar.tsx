@@ -1,8 +1,5 @@
 "use client";
-
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Grid, Home, LineChart, LogOut, Repeat, Settings } from "lucide-react";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,7 +19,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
