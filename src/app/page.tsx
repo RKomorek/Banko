@@ -8,7 +8,7 @@ import { Modal, ModalCloseButton } from "@/components/ui/modal";
 import { ModeToggle } from "@/components/ui/modeToggle";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { IUser } from "@/interfaces/users.interfaces";
-import { fetchUsers } from "@/services/users.service";
+import { GetUsers } from "@/services/users.service";
 import { useEffect, useState } from "react";
 
 
@@ -16,7 +16,7 @@ export default function Home() {
   const [users, setUsers] = useState<IUser[]>([]);
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await fetchUsers();
+      const { data, error } = await GetUsers();
       if (error) {
         console.error('Erro ao buscar usuários:', error);
       } else {

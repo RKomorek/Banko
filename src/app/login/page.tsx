@@ -5,14 +5,14 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Metadata } from "next"
+} from "@/components/ui/card";
+import { Metadata } from "next";
 import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Login - Banko",
   description: "Entre na sua conta para acessar sua gestão financeira.",
-}
+};
 
 export default function LoginForm() {
   return (
@@ -36,5 +36,5 @@ export default function LoginForm() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
