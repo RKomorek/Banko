@@ -1,10 +1,8 @@
 "use client";
-
 import { BalanceCard } from "@/components/ui/balance-card";
 import { CardPaymentMethod } from "@/components/ui/payment-method";
 import { WelcomeCard } from "@/components/ui/welcome-card";
 import { cn } from "@/lib/utils";
-
 
 function Container({
   className,
@@ -22,7 +20,6 @@ function Container({
 }
 
 export default function Home() {
-
   return (
     <main className="p-4">
 
