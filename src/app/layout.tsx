@@ -1,22 +1,22 @@
-import type { Metadata } from "next";
-import { Lato } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/ui/theme-provider";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ModeToggle } from "@/components/ui/modeToggle";
 
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+
+import { AppSidebar } from "@/components/app-sidebar";
+import { Lato } from "next/font/google";
+import type { Metadata } from "next";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 
 const lato = Lato({
-  weight: ['100', '300', '400', '700', '900'],
-  subsets: ['latin'],
-  variable: '--font-lato',
+  weight: ["100", "300", "400", "700", "900"],
+  subsets: ["latin"],
+  variable: "--font-lato",
 });
 
 export const metadata: Metadata = {
   title: "Banko",
   description: "Controle suas finanças!",
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,26 +25,23 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className={`${lato.variable} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {/* Cabeçalho */}
-          <header className="flex items-center justify-between bg-card text-card-foreground p-4 shadow-sm">
-            <h1 className="text-2xl font-bold">Banko</h1>
-                      <ModeToggle />
-
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">Olá, Carol</span>
-              <Avatar>
-                <AvatarImage src="/avatar.png" alt="Carol" />
-                <AvatarFallback>C</AvatarFallback>
-              </Avatar>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SidebarProvider>
+            <div className="flex h-screen w-full">
+              <AppSidebar />
+              <main className="flex-1 min-h-screen">
+                <SidebarTrigger className="ml-3 mt-3 cursor-pointer" />
+                {children}
+              </main>
             </div>
-          </header>
-          {/* Conteúdo da página */}
-          <main className="flex-1 p-6">
-            {children}
-          </main>
+          </SidebarProvider>
         </ThemeProvider>
       </body>
-    </html >
+    </html>
   );
 }

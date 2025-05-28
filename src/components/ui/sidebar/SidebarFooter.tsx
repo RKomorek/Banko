@@ -1,0 +1,1 @@
+export const SidebarFooter = () => <div className='p-4'>Footer</div>;

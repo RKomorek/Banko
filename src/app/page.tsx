@@ -1,13 +1,9 @@
 "use client";
 
 import { BalanceCard } from "@/components/ui/balance-card";
-import { Button } from "@/components/ui/button";
-import { Modal, ModalCloseButton } from "@/components/ui/modal";
 import { CardPaymentMethod } from "@/components/ui/payment-method";
-import { IUser } from "@/interfaces/users.interfaces";
 import { cn } from "@/lib/utils";
-import { fetchUsers } from "@/services/users.service";
-import { useEffect, useState } from "react";
+
 
 function Container({
   className,
@@ -26,19 +22,6 @@ function Container({
 
 export default function Home() {
 
-
-  const [users, setUsers] = useState<IUser[]>([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await fetchUsers();
-      if (error) {
-        console.error('Erro ao buscar usuários:', error);
-      } else {
-        setUsers(data);
-      }
-    };
-    fetchData();
-  }, []);
   return (
     <main className="p-4">
 
