@@ -7,7 +7,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Grid, Home, LineChart, LogOut, Repeat, Settings } from "lucide-react";
+import {
+  Grid,
+  Home,
+  LineChart,
+  LogOut,
+  Repeat,
+  Settings,
+  User,
+} from "lucide-react";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -148,7 +156,9 @@ export function AppSidebar() {
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2 w-full text-left hover:bg-muted px-2 py-1.5 rounded-md">
                 <Avatar className="h-8 w-8">
-                  <AvatarFallback>MS</AvatarFallback>
+                  <AvatarFallback>
+                    <User />
+                  </AvatarFallback>
                 </Avatar>
                 {open && (
                   <div className="flex-1 min-w-0">
