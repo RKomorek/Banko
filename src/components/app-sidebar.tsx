@@ -24,13 +24,14 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAppContext } from "@/context/app.context";
+import { ModeToggle } from "./ui/modeToggle";
 
 // Menu items
 const items = [
   { title: "Home", url: "/", icon: Home },
   { title: "Transações", url: "/transactions", icon: Repeat },
-  { title: "Investimentos", url: "/register", icon: LineChart },
-  { title: "Outros Serviços", url: "/login", icon: Grid },
+  { title: "Investimentos", url: "/", icon: LineChart },
+  { title: "Outros Serviços", url: "/", icon: Grid },
 ];
 
 export function AppSidebar() {
@@ -142,7 +143,9 @@ export function AppSidebar() {
 
         {/* Footer */}
         <div className="border-t px-4 py-3">
-          <DropdownMenu>
+          <DropdownMenu >
+            <div className="flex items-center justify-between">
+              <ModeToggle />
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2 w-full text-left hover:bg-muted px-2 py-1.5 rounded-md">
                 <Avatar className="h-8 w-8">
@@ -168,6 +171,7 @@ export function AppSidebar() {
                 Sair
               </DropdownMenuItem>
             </DropdownMenuContent>
+            </div>
           </DropdownMenu>
         </div>
       </div>
