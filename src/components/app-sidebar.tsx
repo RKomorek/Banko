@@ -163,7 +163,7 @@ export function AppSidebar() {
                 </Avatar>
                 {open && (
                   <div className="flex-1 min-w-0">
-                    {/* <p className="text-sm font-medium leading-none">{user?.name}</p> */}
+                    <p className="text-sm font-medium leading-none">{user?.user_metadata.name}</p>
                     <p className="text-xs text-muted-foreground truncate">
                       {user?.email}
                     </p>
