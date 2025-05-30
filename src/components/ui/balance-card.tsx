@@ -1,6 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./card";
 import { LineChart, Line } from "recharts";
 import { ChartContainer } from "./chart";
+import { getAccountByUserId } from "@/services/account.service";
+import { useEffect, useState } from "react";
+import { useAppContext } from "@/context/app.context";
+import { getUserByAuthId } from "@/services/users.service";
+import { IAccount } from "@/interfaces/account.interface";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 const data = [
   { revenue: 10400, subscription: 240 },
@@ -25,13 +31,35 @@ const chartConfig = {
 };
 
 export function BalanceCard() {
+  const { user } = useAppContext();
+  const [account, setAccount] = useState<IAccount | null>(null);
+
+  useEffect(() => {
+    fetchAccountByUserId();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  async function fetchAccountByUserId() {
+    if (!user) return;
+    const { data: appUser } = await getUserByAuthId(user.id);
+    const { data: accountData, error } = await getAccountByUserId(appUser.id);
+    
+    if (error) {
+      console.error("Erro ao buscar conta:", error.message);
+    } else {
+      setAccount(accountData);
+      console.log("Dados da conta:", accountData);
+    }
+  }
+
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle>Saldo</CardTitle>
       </CardHeader>
       <CardContent className="pb-0">
-        <div className="text-2xl font-bold">R$10.675,89</div>
+        <div className="text-2xl font-bold">{formatCurrency(account?.saldo)}</div>
         <p className="text-xs text-muted-foreground">
           +20.1% desde o último mês
         </p>
