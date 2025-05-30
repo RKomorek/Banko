@@ -1,40 +1,30 @@
-// Exemplo de uso
 import { IRegisterUser } from "@/interfaces/users.interfaces";
 import { supabase } from "../config/supabaseClient";
 
-export async function GetUsers() {
-  const { data, error } = await supabase.from("users").select("*");
+export async function getUserByAuthId(authUserId: string) {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("auth_user_id", authUserId)
+    .single(); // ← garante que retorna só uma conta (por usuário)
 
-  if (error) {
-    console.error("Erro ao buscar usuários:", error);
-    return { error };
-  }
-  return { data };
+  return { data, error };
 }
 
-// Exemplo de uso para adicionar um novo usuário
-// export async function AddUser(user: IRegisterUser) {
-//   const { data, error } = await supabase
-//     .from('users')
-//     .insert(user)
 
-//   if (error) {
-//     console.error('Erro ao adicionar usuário:', error)
-//     return { error }
-//   }
-
-//   console.log('Usuário adicionado:', data)
-//   return { data }
-// }
-// Exemplo de uso para adicionar um novo usuário pelo chat gpt
-// const { error } = await supabase
-//   .from('users')
-//   .insert([{ name: 'João', email: 'joao@email.com' }])
+function gerarNumeroConta() {
+  return Math.floor(1000000000 + Math.random() * 9000000000).toString();
+}
 
 export async function registerUser(user: IRegisterUser) {
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email: user.email,
     password: user.password,
+    options: {
+      data: {
+        name: user.name,
+      },
+    },
   });
 
   if (authError) return { error: authError };
@@ -43,11 +33,33 @@ export async function registerUser(user: IRegisterUser) {
 
   if (!authUserId) return { error: { message: "Erro ao obter ID do usuário" } };
 
-  const { data, error: userError } = await supabase.from("users").insert({
-    email: user.email,
-    nome: user.name,
-    auth_user_id: authUserId,
+  const { data: insertedUsers, error: userError } = await supabase
+    .from("users")
+    .insert({
+      email: user.email,
+      nome: user.name,
+      auth_user_id: authUserId,
+    })
+    .select("id") // importante: pegamos o ID retornado
+    .single();
+
+  if (userError || !insertedUsers) {
+    return {
+      error: userError || { message: "Erro ao criar usuário na tabela users" },
+    };
+  }
+
+  const numeroConta = gerarNumeroConta();
+
+  const { error: accountError } = await supabase.from("accounts").insert({
+    user_id: insertedUsers.id,
+    numero_conta: numeroConta,
+    saldo: 10000,
   });
 
-  return { data, error: userError };
+  if (accountError) {
+    return { error: accountError };
+  }
+
+  return { data: { userId: insertedUsers.id, numeroConta } };
 }
