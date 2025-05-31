@@ -6,10 +6,14 @@ import { Icons } from "./icons";
 import { Label } from "./label";
 import MoneyInput from "./money-input";
 import { RadioGroup, RadioGroupItem } from "./radio-group";
+import { Input } from "./input";
+import { Switch } from "./switch";
 
 export function CardPaymentMethod() {
   const [moneyValue, setMoneyValue] = useState<number>(0);
   const [paymentType, setPaymentType] = useState<string>("cartao");
+  const [description, setDescription] = useState<string>("");
+  const [isEntry, setIsEntry] = useState<boolean>(true);
 
   async function setTransaction() {
     if (moneyValue <= 0) {
@@ -17,9 +21,16 @@ export function CardPaymentMethod() {
       return;
     }
 
+    const transactionType = isEntry ? "entrada" : "saida";
+
     const { data, error } = await supabase
       .from("account")
-      .insert([{ value: moneyValue, payment_method: paymentType }]);
+      .insert([{
+        value: isEntry ? moneyValue : -moneyValue,
+        payment_method: paymentType,
+        description: description,
+        transaction_type: transactionType
+      }]);
 
     if (error) {
       console.error("Erro ao inserir transação:", error);
@@ -44,7 +55,7 @@ export function CardPaymentMethod() {
               htmlFor="cartao"
               className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
             >
-              <Icons.card></Icons.card>
+              <Icons.cartao></Icons.cartao>
               Cartão
             </Label>
           </div>
@@ -73,6 +84,26 @@ export function CardPaymentMethod() {
             </Label>
           </div>
         </RadioGroup>
+        <div className="grid gap-2">
+          <Label htmlFor="descricao">Descrição</Label>
+          <Input name="descricao" placeholder="Detalhe a transação aqui" value={description} onChange={(e) => setDescription(e.target.value)} />
+        </div>
+
+        <div className="grid gap-2">
+          <Label>Tipo de Transação</Label>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="transaction-type"
+              checked={isEntry}
+              onCheckedChange={setIsEntry}
+              aria-label="Alternar entre Entrada e Saída"
+            />
+            <Label htmlFor="transaction-type" className="text-muted-foreground">
+              {isEntry ? "Entrada" : "Saída"}
+            </Label>
+          </div>
+
+        </div>
         <div className="grid gap-2">
           <Label htmlFor="valor">Valor</Label>
           <MoneyInput name="money" placeholder="R$ 0,00" onChange={setMoneyValue} />

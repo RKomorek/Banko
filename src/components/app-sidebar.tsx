@@ -12,7 +12,6 @@ import {
   LineChart,
   LogOut,
   Repeat,
-  Settings,
   User,
 } from "lucide-react";
 import {
@@ -21,12 +20,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useAppContext } from "@/context/app.context";
@@ -38,20 +31,17 @@ import { ModeToggle } from "./ui/modeToggle";
 const items = [
   { title: "Home", url: "/", icon: Home },
   { title: "Transações", url: "/transactions", icon: Repeat },
-  { title: "Investimentos", url: "/", icon: LineChart },
-  { title: "Outros Serviços", url: "/", icon: Grid },
+  { title: "Investimentos", url: "/investimentos", icon: LineChart },
+  { title: "Outros Serviços", url: "/servicos", icon: Grid },
 ];
-
 export function AppSidebar() {
   const { open, setOpen } = useSidebar();
   const { user } = useAppContext();
-
   const router = useRouter();
 
   function handleLogout() {
     // Limpa o localStorage ou sessionStorage
     localStorage.removeItem("sb-xrnhzpiwgzhjcmyiuxfv-auth-token"); // ou "token", dependendo do que você salvou
-
     // Redireciona o usuário
     router.replace("/login");
   }
@@ -64,96 +54,88 @@ export function AppSidebar() {
   }, []);
 
   return (
-    <TooltipProvider delayDuration={100}>
+    <div
+      className={cn(
+        "h-screen bg-background border-r flex flex-col justify-between transition-all duration-300",
+        open ? "w-64" : "w-[72px]"
+      )}
+    >
+      {/* Header (logo + toggle) */}
       <div
-        className={cn(
-          "h-screen bg-background border-r flex flex-col justify-between transition-all duration-300",
-          open ? "w-64" : "w-[72px]"
-        )}
+        onClick={() => setOpen(!open)}
+        className="p-4 flex items-center justify-center cursor-pointer"
+        aria-label="Alternar menu"
       >
-        {/* Header (logo + toggle) */}
-        <div
-          onClick={() => setOpen(!open)}
-          className="p-4 flex items-center justify-center cursor-pointer"
-          aria-label="Alternar menu"
-        >
-          {open ? (
-            <>
-              {/* Logo completo light/dark */}
-              <Image
-                src="/logo-banko-full-light.webp"
-                alt="Logo Banko completo light"
-                width={120}
-                height={32}
-                className="block dark:hidden"
-                priority
-              />
-              <Image
-                src="/logo-banko-full-dark.webp"
-                alt="Logo Banko completo dark"
-                width={120}
-                height={32}
-                className="hidden dark:block"
-                priority
-              />
-            </>
-          ) : (
-            <>
-              {/* Logo mini light/dark */}
-              <Image
-                src="/logo-banko-mini-light.webp"
-                alt="Logo Banko mini light"
-                width={32}
-                height={32}
-                className="block dark:hidden"
-                priority
-              />
-              <Image
-                src="/logo-banko-mini-dark.webp"
-                alt="Logo Banko mini dark"
-                width={32}
-                height={32}
-                className="hidden dark:block"
-                priority
-              />
-            </>
-          )}
-        </div>
+        {open ? (
+          <>
+            {/* Logo completo light/dark */}
+            <Image
+              src="/logo-banko-full-light.webp"
+              alt="Logo Banko completo light"
+              width={120}
+              height={32}
+              className="block dark:hidden"
+              priority
+            />
+            <Image
+              src="/logo-banko-full-dark.webp"
+              alt="Logo Banko completo dark"
+              width={120}
+              height={32}
+              className="hidden dark:block"
+              priority
+            />
+          </>
+        ) : (
+          <>
+            {/* Logo mini light/dark */}
+            <Image
+              src="/logo-banko-mini-light.webp"
+              alt="Logo Banko mini light"
+              width={32}
+              height={32}
+              className="block dark:hidden"
+              priority
+            />
+            <Image
+              src="/logo-banko-mini-dark.webp"
+              alt="Logo Banko mini dark"
+              width={32}
+              height={32}
+              className="hidden dark:block"
+              priority
+            />
+          </>
+        )}
+      </div>
 
-        {/* Menu */}
-        <div className="flex-1 px-2">
-          <SidebarMenu className={cn(!open && "items-center")}>
-            {items.map((item) => {
-              const Icon = item.icon;
-              return (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <a
-                          href={item.url}
-                          className="flex items-center gap-2 p-2 rounded-md hover:bg-muted transition-colors"
-                        >
-                          <Icon className="h-5 w-5" />
-                          {open && <span>{item.title}</span>}
-                        </a>
-                      </TooltipTrigger>
-                      <TooltipContent side="right">
-                        <span>{item.title}</span>
-                      </TooltipContent>
-                    </Tooltip>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              );
-            })}
-          </SidebarMenu>
-        </div>
+      {/* Menu */}
+      <div className="flex-1 px-2">
+        <SidebarMenu className={cn(!open && "items-center")}>
+          {items.map((item) => {
+            const Icon = item.icon;
+            return (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton asChild>
+                  <a
+                    href={item.url}
+                    className="flex items-center gap-2 p-2 rounded-md hover:bg-muted transition-colors"
+                  >
+                    <Icon className="h-5 w-5" />
+                    {open && <span>{item.title}</span>}
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
+      </div>
 
-        {/* Footer */}
-        <div className="border-t px-4 py-3">
-          <DropdownMenu >
-            <div className="flex items-center justify-between">
-              <ModeToggle />
+      {/* Footer */}
+      <div className="border-t px-4 py-3">
+        <DropdownMenu>
+          <div className="flex items-center justify-between">
+            <ModeToggle />
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2 w-full text-left hover:bg-muted px-2 py-1.5 rounded-md">
                 <Avatar className="h-8 w-8">
@@ -172,19 +154,14 @@ export function AppSidebar() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                Configurações
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Sair
               </DropdownMenuItem>
             </DropdownMenuContent>
-            </div>
-          </DropdownMenu>
-        </div>
+          </div>
+        </DropdownMenu>
       </div>
-    </TooltipProvider>
+    </div>
   );
 }

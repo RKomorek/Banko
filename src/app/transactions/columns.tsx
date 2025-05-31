@@ -1,10 +1,11 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { formatCurrencyBRL } from "@/lib/formatters";
+import { Icons } from "@/components/ui/icons";
 
 export type Transaction = {
   id: string;
   date: string;
-  type: "boleto" | "pix" | "cartão";
+  type: "boleto" | "pix" | "cartao";
   amount: number;
   description: string;
 };
@@ -33,18 +34,18 @@ export const columns: ColumnDef<Transaction>[] = [
     header: "Tipo",
     cell: ({ getValue }) => {
       const type = getValue() as string;
-
-      const typeMap: Record<string, { label: string; icon: string }> = {
-        pix: { label: "Pix", icon: "❖" },
-        boleto: { label: "Boleto", icon: "🧾" },
-        cartao: { label: "Cartão", icon: "💳" },
+      const typeMap: Record<string, { label: string; icon: React.ElementType }> = {
+        pix: { label: "Pix", icon: Icons.pix },
+        
+        boleto: { label: "Boleto", icon: Icons.boleto},
+        cartao: { label: "Cartão", icon: Icons.cartao },
       };
 
       const data = typeMap[type] ?? { label: type, icon: "" };
 
       return (
         <span className="flex items-center gap-2 font-medium">
-          <span>{data.icon}</span>
+          <data.icon className="h-4 w-4" />
           <span>{data.label}</span>
         </span>
       );

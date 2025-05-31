@@ -1,7 +1,7 @@
 export type Transaction = {
   id: string;
   date: string;
-  type: "boleto" | "pix" | "cartão";
+  type: "boleto" | "pix" | "cartao";
   amount: number;
   description: string;
 };
@@ -24,7 +24,7 @@ export const transactionsMock: Transaction[] = [
   {
     id: "3",
     date: "20/03/2025 12:30",
-    type: "cartão",
+    type: "cartao",
     amount: -120.0,
     description: "Restaurante",
   },
@@ -45,7 +45,7 @@ export const transactionsMock: Transaction[] = [
   {
     id: "6",
     date: "05/04/2025 08:50",
-    type: "cartão",
+    type: "cartao",
     amount: -45.0,
     description: "Café",
   },

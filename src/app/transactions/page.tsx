@@ -1,7 +1,6 @@
 "use client"
 
 import { DataTable } from "@/components/ui/data-table"
-import { Transaction } from "./columns"
 import { transactionsMock } from "./data"
 import { columns } from "./columns"
 
