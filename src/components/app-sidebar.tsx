@@ -12,7 +12,6 @@ import {
   LineChart,
   LogOut,
   Repeat,
-  Settings,
   User,
 } from "lucide-react";
 import {
@@ -35,11 +34,9 @@ const items = [
   { title: "Investimentos", url: "/investments", icon: LineChart },
   { title: "Outros Serviços", url: "/services", icon: Grid },
 ];
-
 export function AppSidebar() {
   const { open, setOpen } = useSidebar();
   const { user } = useAppContext();
-
   const router = useRouter();
 
   function handleLogout() {
@@ -151,10 +148,6 @@ export function AppSidebar() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                Configurações
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Sair

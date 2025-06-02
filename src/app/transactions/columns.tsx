@@ -66,7 +66,6 @@ export function getTransactionColumns(
     },
     cell: ({ getValue }) => {
       const type = getValue() as string;
-
       const typeMap: Record<string, { label: string; icon: string }> = {
         pix: { label: "Pix", icon: "❖" },
         boleto: { label: "Boleto", icon: "🧾" },
@@ -77,7 +76,7 @@ export function getTransactionColumns(
 
       return (
         <span className="flex items-center gap-2 font-medium">
-          <span>{data.icon}</span>
+          <span className="h-4 w-4">{data.icon}</span>
           <span>{data.label}</span>
         </span>
       );
