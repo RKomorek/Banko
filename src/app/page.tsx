@@ -1,7 +1,7 @@
 "use client";
-import { BalanceCard } from "@/components/ui/balance-card";
-import { CardPaymentMethod } from "@/components/ui/payment-method";
-import { WelcomeCard } from "@/components/ui/welcome-card";
+import { BalanceCard } from "@/components/balance-card.component";
+import { CardPaymentMethod } from "@/components/payment-method.component";
+import { WelcomeCard } from "@/components/welcome-card.component";
 import { cn } from "@/lib/utils";
 
 function Container({

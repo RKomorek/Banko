@@ -7,9 +7,10 @@ import { Toaster } from "@/components/ui/sonner";
 import { useAppContext } from "@/context/app.context";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-   const { user } = useAppContext();
+   const { user, accountId } = useAppContext();
 
   console.log("User:", user);
+  console.log("Account ID:", accountId);
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>

@@ -1,5 +1,5 @@
 import { useAppContext } from "@/context/app.context";
-import { Card, CardContent, CardHeader, CardTitle } from "./card";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 export function WelcomeCard() {
    const { user } = useAppContext();

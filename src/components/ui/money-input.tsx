@@ -1,11 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "../ui/input";
 
 type TextInputProps = {
   name: string;
   placeholder: string;
   onChange: (value: number) => void;
+  className?: string;
+  value?: number | string;
 };
 
 const moneyFormatter = new Intl.NumberFormat("pt-BR", {
@@ -15,22 +17,29 @@ const moneyFormatter = new Intl.NumberFormat("pt-BR", {
   maximumFractionDigits: 2,
 });
 
-export default function MoneyInput({ name, placeholder, onChange }: TextInputProps) {
-  const [value, setValue] = useState("");
+function formatMoneyFromDigits(digits: string) {
+  const numberValue = Number(digits) / 100;
+  return moneyFormatter.format(numberValue);
+}
 
-  function formatMoney(input: string): string {
-    const digits = input.replace(/\D/g, "");
-    const numberValue = Number(digits) / 100;
-    return moneyFormatter.format(numberValue);
-  }
+export default function MoneyInput({ name, placeholder, onChange, className, value }: TextInputProps) {
+  const [digits, setDigits] = useState<string>("");
+
+  useEffect(() => {
+    if (value === 0 || value === "" || value === undefined) {
+      setDigits("");
+    } else {
+      const cents = Math.round(Number(value) * 100);
+      setDigits(String(cents));
+    }
+  }, [value]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const formattedValue = formatMoney(event.target.value);
-    setValue(formattedValue);
+    const onlyDigits = event.target.value.replace(/\D/g, "");
+    setDigits(onlyDigits);
 
     if (onChange) {
-      const digits = event.target.value.replace(/\D/g, "");
-      const realValue = Number(digits) / 100;
+      const realValue = Number(onlyDigits) / 100;
       onChange(realValue);
     }
   }
@@ -40,8 +49,11 @@ export default function MoneyInput({ name, placeholder, onChange }: TextInputPro
       name={name}
       placeholder={placeholder}
       type="text"
-      value={value}
+      value={digits ? formatMoneyFromDigits(digits) : ""}
       onChange={handleChange}
+      className={className}
+      inputMode="numeric"
+      autoComplete="off"
     />
   );
 }

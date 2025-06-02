@@ -13,3 +13,12 @@ export async function getAccountByUserId(userId: string) {
 
   return { data };
 }
+
+export async function updateAccountBalance(accountId: string, delta: number) {
+  const { data, error } = await supabase
+    .rpc("update_account_balance", {
+      account_id: accountId,
+      delta: delta,
+    });
+  return { data, error };
+}

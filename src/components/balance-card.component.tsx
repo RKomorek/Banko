@@ -1,11 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from "./card";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { LineChart, Line } from "recharts";
-import { ChartContainer } from "./chart";
+import { ChartContainer } from "./ui/chart";
 import { getAccountByUserId } from "@/services/account.service";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAppContext } from "@/context/app.context";
 import { getUserByAuthId } from "@/services/users.service";
-import { IAccount } from "@/interfaces/account.interface";
 import { formatCurrency } from "@/utils/formatCurrency";
 
 const data = [
@@ -31,12 +30,10 @@ const chartConfig = {
 };
 
 export function BalanceCard() {
-  const { user } = useAppContext();
-  const [account, setAccount] = useState<IAccount | null>(null);
+  const { user, setSaldo, saldo } = useAppContext();
 
   useEffect(() => {
     fetchAccountByUserId();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   async function fetchAccountByUserId() {
@@ -47,7 +44,7 @@ export function BalanceCard() {
     if (error) {
       console.error("Erro ao buscar conta:", error.message);
     } else {
-      setAccount(accountData);
+      setSaldo(accountData.saldo);
       console.log("Dados da conta:", accountData);
     }
   }
@@ -59,7 +56,7 @@ export function BalanceCard() {
         <CardTitle>Saldo</CardTitle>
       </CardHeader>
       <CardContent className="pb-0">
-        <div className="text-2xl font-bold">{formatCurrency(account?.saldo)}</div>
+        <div className="text-2xl font-bold">{formatCurrency(saldo)}</div>
         <p className="text-xs text-muted-foreground">
           +20.1% desde o último mês
         </p>

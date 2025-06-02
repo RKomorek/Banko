@@ -21,12 +21,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useAppContext } from "@/context/app.context";
@@ -38,8 +32,8 @@ import { ModeToggle } from "./ui/modeToggle";
 const items = [
   { title: "Home", url: "/", icon: Home },
   { title: "Transações", url: "/transactions", icon: Repeat },
-  { title: "Investimentos", url: "/", icon: LineChart },
-  { title: "Outros Serviços", url: "/", icon: Grid },
+  { title: "Investimentos", url: "/investments", icon: LineChart },
+  { title: "Outros Serviços", url: "/services", icon: Grid },
 ];
 
 export function AppSidebar() {
@@ -49,10 +43,7 @@ export function AppSidebar() {
   const router = useRouter();
 
   function handleLogout() {
-    // Limpa o localStorage ou sessionStorage
-    localStorage.removeItem("sb-xrnhzpiwgzhjcmyiuxfv-auth-token"); // ou "token", dependendo do que você salvou
-
-    // Redireciona o usuário
+    localStorage.removeItem("sb-xrnhzpiwgzhjcmyiuxfv-auth-token");
     router.replace("/login");
   }
 
@@ -64,14 +55,13 @@ export function AppSidebar() {
   }, []);
 
   return (
-    <TooltipProvider delayDuration={100}>
+    <>
       <div
         className={cn(
           "h-screen bg-background border-r flex flex-col justify-between transition-all duration-300",
           open ? "w-64" : "w-[72px]"
         )}
       >
-        {/* Header (logo + toggle) */}
         <div
           onClick={() => setOpen(!open)}
           className="p-4 flex items-center justify-center cursor-pointer"
@@ -79,7 +69,6 @@ export function AppSidebar() {
         >
           {open ? (
             <>
-              {/* Logo completo light/dark */}
               <Image
                 src="/logo-banko-full-light.webp"
                 alt="Logo Banko completo light"
@@ -99,7 +88,6 @@ export function AppSidebar() {
             </>
           ) : (
             <>
-              {/* Logo mini light/dark */}
               <Image
                 src="/logo-banko-mini-light.webp"
                 alt="Logo Banko mini light"
@@ -120,7 +108,6 @@ export function AppSidebar() {
           )}
         </div>
 
-        {/* Menu */}
         <div className="flex-1 px-2">
           <SidebarMenu className={cn(!open && "items-center")}>
             {items.map((item) => {
@@ -128,20 +115,13 @@ export function AppSidebar() {
               return (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <a
-                          href={item.url}
-                          className="flex items-center gap-2 p-2 rounded-md hover:bg-muted transition-colors"
-                        >
-                          <Icon className="h-5 w-5" />
-                          {open && <span>{item.title}</span>}
-                        </a>
-                      </TooltipTrigger>
-                      <TooltipContent side="right">
-                        <span>{item.title}</span>
-                      </TooltipContent>
-                    </Tooltip>
+                    <a
+                      href={item.url}
+                      className="flex items-center gap-2 p-2 rounded-md hover:bg-muted transition-colors"
+                    >
+                      <Icon className="h-5 w-5" />
+                      {open && <span>{item.title}</span>}
+                    </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               );
@@ -149,13 +129,12 @@ export function AppSidebar() {
           </SidebarMenu>
         </div>
 
-        {/* Footer */}
         <div className="border-t px-4 py-3">
           <DropdownMenu >
-            <div className="flex items-center justify-between">
+            <div className={`${open ? "flex" : "flex flex-col"} items-center justify-center`}>
               <ModeToggle />
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 w-full text-left hover:bg-muted px-2 py-1.5 rounded-md">
+              <button className="flex items-center justify-center gap-2 w-full text-left hover:bg-muted px-1 py-1.5 rounded-md">
                 <Avatar className="h-8 w-8">
                   <AvatarFallback>
                     <User />
@@ -185,6 +164,6 @@ export function AppSidebar() {
           </DropdownMenu>
         </div>
       </div>
-    </TooltipProvider>
+    </>
   );
 }
