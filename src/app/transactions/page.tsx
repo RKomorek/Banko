@@ -49,7 +49,7 @@ export default function TransactionsPage() {
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="bg-transparent border-0 p-0">
+      <DialogContent className="sm:bg-transparent  sm:border-0 sm:p-0">
         <CardPaymentMethod onClose={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
