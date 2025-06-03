@@ -29,7 +29,7 @@ import { ModeToggle } from "./ui/modeToggle";
 
 // Menu items
 const items = [
-  { title: "Home", url: "/", icon: Home },
+  { title: "Página inicial", url: "/", icon: Home },
   { title: "Transações", url: "/transactions", icon: Repeat },
   { title: "Investimentos", url: "/investments", icon: LineChart },
   { title: "Outros Serviços", url: "/services", icon: Grid },

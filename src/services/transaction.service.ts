@@ -28,3 +28,14 @@ export async function deleteTransactionById(transactionId: string) {
 
   return { error };
 }
+
+
+export async function updateTransaction(id: string, updatedData: Partial<ITransaction>) {
+  const { data, error } = await supabase
+    .from("transactions")
+    .update(updatedData)
+    .eq("id", id)
+    .single();
+
+  return { data, error };
+}

@@ -1,11 +1,10 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-
 export default function NotFoundPage() {
-    const router = useRouter();
+  const router = useRouter();
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
       <Image
@@ -24,7 +23,7 @@ export default function NotFoundPage() {
       />
 
       <p className="text-lg mb-6">Página não encontrada</p>
-      <Button  onClick={() => router.push("/")} >
+      <Button onClick={() => router.push("/")}>
         Voltar para a página inicial
       </Button>
     </div>

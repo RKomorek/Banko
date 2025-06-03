@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisVertical, SquarePen, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { deleteTransactionById } from "@/services/transaction.service";
@@ -13,15 +12,19 @@ import { toast } from "sonner";
 import { DeleteTransactionModal } from "../deleteTransactionModal.component";
 import { Row } from "@tanstack/react-table";
 import { ITransaction } from "@/interfaces/transaction.interface";
+import { EditTransactionModal } from "../editTransactionModal.component";
 
 export default function ActionsColumnsTransactions({
   row,
   onTransactionDeleted,
+  onTransactionUpdated,
 }: {
-   row: Row<ITransaction>;
+  row: Row<ITransaction>;
   onTransactionDeleted: () => void;
+  onTransactionUpdated: () => void;
 }) {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState<ITransaction | null>(null);
 
   async function handleDelete() {
     const { id } = row.original;
@@ -49,10 +52,17 @@ export default function ActionsColumnsTransactions({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Ações</DropdownMenuLabel>
-          <DropdownMenuItem>Editar</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpenDeleteModal(true)}>
-            Excluir
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => setSelectedTransaction(row.original)}
+          >
+            <SquarePen /> Editar
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => setOpenDeleteModal(true)}
+          >
+            <Trash2 /> Excluir
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -62,6 +72,17 @@ export default function ActionsColumnsTransactions({
         onClose={() => setOpenDeleteModal(false)}
         onConfirm={handleDelete}
       />
+
+      {selectedTransaction && (
+        <EditTransactionModal
+          open={!!selectedTransaction}
+          onClose={() => setSelectedTransaction(null)}
+          transaction={selectedTransaction}
+          onSuccess={() => {
+            onTransactionUpdated(); 
+          }}
+        />
+      )}
     </>
   );
 }

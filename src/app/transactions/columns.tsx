@@ -4,9 +4,11 @@ import { ITransaction } from "@/interfaces/transaction.interface";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import ActionsColumnsTransactions from "@/components/actionsColumns.tsx/actionsColumnsTransactions";
+import { Icons } from "@/components/ui/icons";
 
 export function getTransactionColumns(
-  onTransactionDeleted: () => Promise<void>
+  onTransactionDeleted: () => Promise<void>,
+  onTransactionUpdated: () => Promise<void>
 ): ColumnDef<ITransaction>[] {
   return [
   {
@@ -66,17 +68,17 @@ export function getTransactionColumns(
     },
     cell: ({ getValue }) => {
       const type = getValue() as string;
-      const typeMap: Record<string, { label: string; icon: string }> = {
-        pix: { label: "Pix", icon: "❖" },
-        boleto: { label: "Boleto", icon: "🧾" },
-        cartao: { label: "Cartão", icon: "💳" },
+      const typeMap: Record<string, { label: string; icon: React.ElementType }> = {
+        pix: { label: "Pix", icon: Icons.pix },
+        boleto: { label: "Boleto", icon: Icons.boleto },
+        cartao: { label: "Cartão", icon: Icons.cartao },
       };
 
       const data = typeMap[type] ?? { label: type, icon: "" };
 
       return (
         <span className="flex items-center gap-2 font-medium">
-          <span className="h-4 w-4">{data.icon}</span>
+          <data.icon className="h-4 w-4" />
           <span>{data.label}</span>
         </span>
       );
@@ -98,11 +100,7 @@ export function getTransactionColumns(
     cell: ({ row }) => {
       const movimentacao = row.getValue("movimentacao") as string;
       return (
-        <span
-          className={`${
-            movimentacao === "entrada" ? "text-green-600" : "text-red-500"
-          } flex items-center`}
-        >
+        <span>
           {/* {movimentacao === "entrada" ? "🔺" : "🔻"} */}
           {movimentacao.charAt(0).toUpperCase() + movimentacao.slice(1)}
         </span>
@@ -129,7 +127,6 @@ export function getTransactionColumns(
       const isNegative = movimentacao === "saida";
       return (
         <span className={isNegative ? "text-red-500" : "text-green-600"}>
-          {isNegative ? "-" : "+"}
           {formatCurrencyBRL(value)}
         </span>
       );
@@ -137,10 +134,12 @@ export function getTransactionColumns(
   },
   {
     id: "actions",
+    header: "Ações",
     cell: ({ row }) => (
         <ActionsColumnsTransactions
           row={row}
           onTransactionDeleted={onTransactionDeleted}
+          onTransactionUpdated={onTransactionUpdated}
         />
       ),
   },

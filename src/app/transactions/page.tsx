@@ -40,12 +40,12 @@ export default function TransactionsPage() {
     <main className="p-6">
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Transações</h1>
-        <Button onClick={() => router.push("/")}>Adicionar Transação</Button>
+        <Button onClick={() => router.push("/")}>Nova Transação</Button>
       </div>
       {loading ? (
         <p>Carregando transações...</p>
       ) : (
-        <DataTable columns={getTransactionColumns(fetchTransactions)} data={transactions} />
+        <DataTable columns={getTransactionColumns(fetchTransactions, fetchTransactions)} data={transactions} />
       )}
     </main>
   );

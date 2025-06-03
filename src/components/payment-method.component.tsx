@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -14,12 +14,21 @@ import MoneyInput from "./ui/money-input";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Input } from "./ui/input";
 import { BanknoteArrowDown, BanknoteArrowUp } from "lucide-react";
-import { addTransaction } from "@/services/transaction.service";
+import { addTransaction, updateTransaction } from "@/services/transaction.service";
+import { updateAccountBalance } from "@/services/account.service";
 import { useAppContext } from "@/context/app.context";
 import { toast } from "sonner";
-import { updateAccountBalance } from "@/services/account.service";
+import { ITransaction } from "@/interfaces/transaction.interface";
 
-export function CardPaymentMethod() {
+export function CardPaymentMethod({
+  initialData,
+  onSuccess,
+  onCancel,
+}: {
+  initialData?: ITransaction; // Se tiver, está editando!
+  onSuccess?: () => void;
+  onCancel?: () => void;
+}) {
   const [moneyValue, setMoneyValue] = useState<number>(0);
   const [paymentType, setPaymentType] = useState<string>("cartao");
   const [movingType, setMovingType] = useState<string>("entrada");
@@ -27,7 +36,16 @@ export function CardPaymentMethod() {
 
   const { accountId, setSaldo, saldo } = useAppContext();
 
-  async function handleTransaction() {
+  useEffect(() => {
+    if (initialData) {
+      setMoneyValue(initialData.valor);
+      setPaymentType(initialData.tipo);
+      setMovingType(initialData.movimentacao);
+      setDescricao(initialData.descricao);
+    }
+  }, [initialData]);
+
+  async function handleSubmit() {
     if (!accountId) {
       toast.error("Conta não encontrada");
       return;
@@ -37,49 +55,69 @@ export function CardPaymentMethod() {
       return;
     }
 
-    const transactionData = {
-      account_id: accountId,
-      descricao,
-      valor: moneyValue,
-      tipo: paymentType,
-      data: new Date().toISOString().slice(0, 16), // yyyy-mm-ddTHH:MM
-      movimentacao: movingType as "entrada" | "saida",
-    };
-
-    const { data, error } = await addTransaction(transactionData);
-
-    if (error) {
-      console.error("Erro ao cadastrar transação:", error);
-      toast.error("Erro ao cadastrar transação. Tente novamente.");
-    } else {
-      console.log("Transação cadastrada:", data);
-
-      // Atualiza o saldo da conta
-      const delta = movingType === "entrada" ? moneyValue : -moneyValue;
-      const { error: balanceError } = await updateAccountBalance(
-        accountId,
-        delta
-      );
-
-      if (balanceError) {
-        console.error("Erro ao atualizar saldo:", balanceError);
-        toast.error(
-          "Transação cadastrada, mas houve um erro ao atualizar o saldo."
-        );
-      } else {
-          setSaldo((typeof saldo === "number" ? saldo : 0) + delta);
-        toast.success("Transação cadastrada e saldo atualizado!");
+    if (initialData) {
+      // Modo edição
+      if (!initialData.id) {
+        toast.error("ID da transação não encontrado.");
+        return;
       }
-      setDescricao("");
-      setPaymentType("cartao");
-      setMovingType("entrada");
-      setMoneyValue(0);
+      const { error } = await updateTransaction(initialData.id, {
+        descricao,
+        valor: moneyValue,
+        tipo: paymentType,
+        movimentacao: movingType as "entrada" | "saida",
+        created_at: new Date().toISOString().slice(0, 16),
+      });
+
+      if (error) {
+        console.error("Erro ao editar transação:", error);
+        toast.error("Erro ao editar transação. Tente novamente.");
+      } else {
+        toast.success("Transação editada com sucesso!");
+        onSuccess?.();
+      }
+    } else {
+      // Modo criação
+      const transactionData = {
+        account_id: accountId,
+        descricao,
+        valor: moneyValue,
+        tipo: paymentType,
+        data: new Date().toISOString().slice(0, 16),
+        movimentacao: movingType as "entrada" | "saida",
+      };
+
+      const { data, error } = await addTransaction(transactionData);
+
+      if (error) {
+        console.error("Erro ao cadastrar transação:", error);
+        toast.error("Erro ao cadastrar transação. Tente novamente.");
+      } else {
+        const delta = movingType === "entrada" ? moneyValue : -moneyValue;
+        const { error: balanceError } = await updateAccountBalance(accountId, delta);
+
+        if (balanceError) {
+          console.error("Erro ao atualizar saldo:", balanceError);
+          toast.error("Transação criada, mas erro ao atualizar saldo.");
+        } else {
+          setSaldo((typeof saldo === "number" ? saldo : 0) + delta);
+          toast.success("Transação cadastrada e saldo atualizado!");
+          console.log("Transação cadastrada:", data);
+        }
+
+        setDescricao("");
+        setPaymentType("cartao");
+        setMovingType("entrada");
+        setMoneyValue(0);
+        onSuccess?.();
+      }
     }
   }
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nova Transação</CardTitle>
+        <CardTitle>{initialData ? "Editar Transação" : "Nova Transação"}</CardTitle>
         <CardDescription>
           Escolha o método de pagamento e insira o valor.
         </CardDescription>
@@ -91,82 +129,49 @@ export function CardPaymentMethod() {
           defaultValue="cartao"
           className="grid grid-cols-3 gap-4"
         >
-          <div>
-            <RadioGroupItem
-              value="cartao"
-              id="cartao"
-              className="peer sr-only"
-            />
-            <Label
-              htmlFor="cartao"
-              className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-            >
-              <Icons.card></Icons.card>
-              Cartão
-            </Label>
-          </div>
-          <div>
-            <RadioGroupItem
-              value="boleto"
-              id="boleto"
-              className="peer sr-only"
-            />
-            <Label
-              htmlFor="boleto"
-              className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-            >
-              <Icons.boleto className="mb-3 h-6 w-6" />
-              Boleto
-            </Label>
-          </div>
-          <div>
-            <RadioGroupItem value="pix" id="pix" className="peer sr-only" />
-            <Label
-              htmlFor="pix"
-              className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-            >
-              <Icons.pix className="mb-3 h-6 w-6" />
-              Pix
-            </Label>
-          </div>
+          {["cartao", "boleto", "pix"].map((type) => (
+            <div key={type}>
+              <RadioGroupItem value={type} id={type} className="peer sr-only" />
+              <Label
+                htmlFor={type}
+                className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+              >
+                {type === "cartao" && <Icons.cartao />}
+                {type === "boleto" && <Icons.boleto className="mb-3 h-6 w-6" />}
+                {type === "pix" && <Icons.pix className="mb-3 h-6 w-6" />}
+                {type.charAt(0).toUpperCase() + type.slice(1)}
+              </Label>
+            </div>
+          ))}
         </RadioGroup>
+
         <div className="justify-center flex items-center">
           <RadioGroup
             value={movingType}
             onValueChange={setMovingType}
-            defaultValue="entrada "
+            defaultValue="entrada"
             className="grid grid-cols-2 gap-4 w-3xs"
           >
-            <div>
-              <RadioGroupItem
-                value="entrada"
-                id="entrada"
-                className="peer sr-only"
-              />
-              <Label
-                htmlFor="entrada"
-                className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-green-600 [&:has([data-state=checked])]:border-green-600"
-              >
-                <BanknoteArrowUp className="mb-1 h-6 w-6" />
-                Entrada
-              </Label>
-            </div>
-            <div>
-              <RadioGroupItem
-                value="saida"
-                id="saida"
-                className="peer sr-only"
-              />
-              <Label
-                htmlFor="saida"
-                className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-red-600 [&:has([data-state=checked])]:border-red-600"
-              >
-                <BanknoteArrowDown className="mb-1 h-6 w-6" />
-                Saída
-              </Label>
-            </div>
+            {["entrada", "saida"].map((type) => (
+              <div key={type}>
+                <RadioGroupItem value={type} id={type} className="peer sr-only" />
+                <Label
+                  htmlFor={type}
+                  className={`flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground
+                    ${type === "entrada" ? "peer-data-[state=checked]:border-green-600" : "peer-data-[state=checked]:border-red-600"}`}
+                >
+                  {type === "entrada" ? (
+                    <BanknoteArrowUp className="mb-1 h-6 w-6" />
+                  ) : (
+                    <BanknoteArrowDown className="mb-1 h-6 w-6" />
+                  )}
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </Label>
+              </div>
+            ))}
           </RadioGroup>
         </div>
+
         <div className="grid gap-4">
           <div className="grid gap-1">
             <Label htmlFor="valor">Valor</Label>
@@ -175,9 +180,7 @@ export function CardPaymentMethod() {
               placeholder="R$ 0,00"
               onChange={setMoneyValue}
               value={moneyValue}
-              className={`${
-                movingType === "entrada" ? " text-green-600" : " text-red-600"
-              }`}
+              className={`${movingType === "entrada" ? "text-green-600" : "text-red-600"}`}
             />
           </div>
           <div className="grid gap-1">
@@ -191,9 +194,14 @@ export function CardPaymentMethod() {
           </div>
         </div>
       </CardContent>
-      <CardFooter>
-        <Button className="w-full" onClick={handleTransaction}>
-          Continuar
+      <CardFooter className="flex items-center justify-between gap-2">
+        {onCancel && (
+          <Button variant="outline" onClick={onCancel} className="">
+            Cancelar
+          </Button>
+        )}
+        <Button onClick={handleSubmit} className="">
+          {initialData ? "Salvar Alterações" : "Continuar"}
         </Button>
       </CardFooter>
     </Card>
