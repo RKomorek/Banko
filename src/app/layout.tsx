@@ -1,8 +1,10 @@
 import "./globals.css";
-import { Lato } from "next/font/google";
-import type { Metadata } from "next";
+
 import AppLayout from "@/components/appLayout";
 import { AppProvider } from "@/context/app.context";
+import { Lato } from "next/font/google";
+import type { Metadata } from "next";
+import { SidebarProvider } from "@/components/ui/sidebar/SidebarContext";
 
 const lato = Lato({
   weight: ["100", "300", "400", "700", "900"],
@@ -14,6 +16,7 @@ export const metadata: Metadata = {
   title: "Banko",
   description: "Controle suas finanças!",
 };
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -21,11 +24,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-        <AppProvider>
+      <AppProvider>
+        <SidebarProvider>
           <body className={`${lato.variable} antialiased`}>
-              <AppLayout>{children}</AppLayout>
+            <AppLayout>{children}</AppLayout>
           </body>
-        </AppProvider>
+        </SidebarProvider>
+      </AppProvider>
     </html>
   );
 }

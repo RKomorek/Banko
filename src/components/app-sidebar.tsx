@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 
 import Image from "next/image";
+import Link from "next/link";
 import { ModeToggle } from "./ui/modeToggle";
 import { cn } from "@/lib/utils";
 import { useAppContext } from "@/context/app.context";
@@ -42,11 +43,12 @@ function getInitials(name?: string): string | null {
 }
 
 export function AppSidebar() {
-  const { open, setOpen } = useSidebar();
+  const { open, setOpen, isReady } = useSidebar();
   const { user } = useAppContext();
   const router = useRouter();
 
   const initials = getInitials(user?.user_metadata.name);
+  if (!isReady) return null;
 
   function handleLogout() {
     localStorage.removeItem("sb-xrnhzpiwgzhjcmyiuxfv-auth-token");
@@ -121,13 +123,13 @@ export function AppSidebar() {
               return (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a
+                    <Link
                       href={item.url}
                       className="flex items-center gap-2 p-2 rounded-md hover:bg-muted transition-colors"
                     >
                       <Icon className="h-5 w-5" />
                       {open && <span>{item.title}</span>}
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               );
