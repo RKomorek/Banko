@@ -30,11 +30,24 @@ const items = [
   { title: "Investimentos", url: "/investments", icon: LineChart },
   { title: "Outros Serviços", url: "/services", icon: Grid },
 ];
+
+function getInitials(name?: string): string | null {
+  if (!name) return null;
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  } else if (parts[0].length > 0) {
+    return parts[0][0].toUpperCase();
+  }
+  return null;
+}
+
 export function AppSidebar() {
   const { open, setOpen, isReady } = useSidebar();
   const { user } = useAppContext();
   const router = useRouter();
 
+  const initials = getInitials(user?.user_metadata.name);
   if (!isReady) return null;
 
   function handleLogout() {
@@ -136,7 +149,11 @@ export function AppSidebar() {
                 <button className="flex items-center justify-center gap-2 w-full text-left hover:bg-muted px-1 py-1.5 rounded-md">
                   <Avatar className="h-8 w-8">
                     <AvatarFallback>
-                      <User />
+                      {initials ? (
+                        <span className="text-sm font-medium">{initials}</span>
+                      ) : (
+                        <User />
+                      )}
                     </AvatarFallback>
                   </Avatar>
                   {open && (
