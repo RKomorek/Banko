@@ -1,4 +1,5 @@
 "use client";
+
 import { BalanceCard } from "@/components/balance-card.component";
 import { CardPaymentMethod } from "@/components/payment-method.component";
 import { WelcomeCard } from "@/components/welcome-card.component";
@@ -16,7 +17,7 @@ function Container({
       )}
       {...props}
     />
-  )
+  );
 }
 
 export default function Home() {
@@ -37,6 +38,6 @@ export default function Home() {
           </Container>
         </div>
       </div>
-    </main >
+    </main>
   );
 }
