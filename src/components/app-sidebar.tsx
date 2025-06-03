@@ -14,6 +14,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "./ui/modeToggle";
@@ -45,7 +46,7 @@ export function AppSidebar() {
   const { open, setOpen, isReady } = useSidebar();
   const { user } = useAppContext();
   const router = useRouter();
-  
+
   useEffect(() => {
     const session = localStorage.getItem("sb-xrnhzpiwgzhjcmyiuxfv-auth-token");
     if (!session) {
@@ -61,12 +62,11 @@ export function AppSidebar() {
     router.replace("/login");
   }
 
-
   return (
     <>
       <div
         className={cn(
-          "h-screen bg-background border-r flex flex-col justify-between transition-all duration-300",
+          "fixed inset-y-0 left-0 bg-background border-r flex flex-col justify-between transition-all duration-300 z-50",
           open ? "w-64" : "w-[72px]"
         )}
       >
