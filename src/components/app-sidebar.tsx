@@ -1,4 +1,5 @@
 "use client";
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -6,26 +7,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Grid,
-  Home,
-  LineChart,
-  LogOut,
-  Repeat,
-  User,
-} from "lucide-react";
+import { Grid, Home, LineChart, LogOut, Repeat, User } from "lucide-react";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+
 import Image from "next/image";
+import { ModeToggle } from "./ui/modeToggle";
 import { cn } from "@/lib/utils";
 import { useAppContext } from "@/context/app.context";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ModeToggle } from "./ui/modeToggle";
 
 // Menu items
 const items = [
@@ -34,10 +29,24 @@ const items = [
   { title: "Investimentos", url: "/investments", icon: LineChart },
   { title: "Outros Serviços", url: "/services", icon: Grid },
 ];
+
+function getInitials(name?: string): string | null {
+  if (!name) return null;
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  } else if (parts[0].length > 0) {
+    return parts[0][0].toUpperCase();
+  }
+  return null;
+}
+
 export function AppSidebar() {
   const { open, setOpen } = useSidebar();
   const { user } = useAppContext();
   const router = useRouter();
+
+  const initials = getInitials(user?.user_metadata.name);
 
   function handleLogout() {
     localStorage.removeItem("sb-xrnhzpiwgzhjcmyiuxfv-auth-token");
@@ -127,32 +136,42 @@ export function AppSidebar() {
         </div>
 
         <div className="border-t px-4 py-3">
-          <DropdownMenu >
-            <div className={`${open ? "flex" : "flex flex-col"} items-center justify-center`}>
+          <DropdownMenu>
+            <div
+              className={`${
+                open ? "flex" : "flex flex-col"
+              } items-center justify-center`}
+            >
               <ModeToggle />
-            <DropdownMenuTrigger asChild>
-              <button className="flex items-center justify-center gap-2 w-full text-left hover:bg-muted px-1 py-1.5 rounded-md">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback>
-                    <User />
-                  </AvatarFallback>
-                </Avatar>
-                {open && (
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium leading-none">{user?.user_metadata.name}</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {user?.email}
-                    </p>
-                  </div>
-                )}
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={handleLogout}>
-                <LogOut className="mr-2 h-4 w-4" />
-                Sair
-              </DropdownMenuItem>
-            </DropdownMenuContent>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center justify-center gap-2 w-full text-left hover:bg-muted px-1 py-1.5 rounded-md">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback>
+                      {initials ? (
+                        <span className="text-sm font-medium">{initials}</span>
+                      ) : (
+                        <User />
+                      )}
+                    </AvatarFallback>
+                  </Avatar>
+                  {open && (
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium leading-none">
+                        {user?.user_metadata.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {user?.email}
+                      </p>
+                    </div>
+                  )}
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sair
+                </DropdownMenuItem>
+              </DropdownMenuContent>
             </div>
           </DropdownMenu>
         </div>
