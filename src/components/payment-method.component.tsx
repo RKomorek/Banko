@@ -27,10 +27,12 @@ export function CardPaymentMethod({
   initialData,
   onSuccess,
   onCancel,
+  onClose
 }: {
   initialData?: ITransaction; // Se tiver, está editando!
   onSuccess?: () => void;
   onCancel?: () => void;
+  onClose?: () => void; // Para fechar o modal se necessário
 }) {
   const [moneyValue, setMoneyValue] = useState<number>(0);
   const [paymentType, setPaymentType] = useState<string>("cartao");
@@ -145,7 +147,6 @@ export function CardPaymentMethod({
           toast.success("Transação cadastrada e saldo atualizado!");
           console.log("Transação cadastrada:", data);
         }
-
         handleDelete();
       }
     }
@@ -156,6 +157,7 @@ export function CardPaymentMethod({
     setPaymentType("cartao");
     setMovingType("entrada");
     setMoneyValue(0);
+    onClose?.();
   }
   const handleCancel = () => {
     handleDelete();
