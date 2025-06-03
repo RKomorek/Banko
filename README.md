@@ -7,7 +7,7 @@ Banko é um gerenciador de transações financeiras que permite o acompanhamento
 Este projeto foi desenvolvido com as seguintes tecnologias:
 
 - [Next.js](https://nextjs.org/) - Framework React para aplicações web
-- [Shard CN UI](https://shardcn.dev/) - Biblioteca de componentes UI
+- [Shard CN UI](https://ui.shadcn.com/) - Biblioteca de componentes UI
 - [Tailwind CSS](https://tailwindcss.com/) - Estilização rápida e eficiente
 - [Supabase](https://supabase.com/) - Banco de dados Postgres e autenticação
 
@@ -40,7 +40,7 @@ A navegação da aplicação ocorre através de um **sidebar**, que possui os se
 
 Para visualizar o design da interface e fluxo da aplicação, acesse o protótipo no Figma através do link abaixo:
 
-🔗 [Protótipo Banko - Figma]([Figma](https://www.figma.com/design/kST3RFJBwiKfNEdj03AwoY/Banko?node-id=1-3&t=6hVAH0v1dPyq3262-1))
+🔗 [Protótipo Banko - Figma](https://www.figma.com/design/kST3RFJBwiKfNEdj03AwoY/Banko?node-id=1-3&t=6hVAH0v1dPyq3262-1)
 
 ## 🧑‍💻 Integrantes do projeto
 
