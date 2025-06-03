@@ -4,7 +4,6 @@ import AppLayout from "@/components/appLayout";
 import { AppProvider } from "@/context/app.context";
 import { Lato } from "next/font/google";
 import type { Metadata } from "next";
-import { SidebarProvider } from "@/components/ui/sidebar/SidebarContext";
 
 const lato = Lato({
   weight: ["100", "300", "400", "700", "900"],
@@ -25,11 +24,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <AppProvider>
-        <SidebarProvider>
           <body className={`${lato.variable} antialiased`}>
             <AppLayout>{children}</AppLayout>
           </body>
-        </SidebarProvider>
       </AppProvider>
     </html>
   );

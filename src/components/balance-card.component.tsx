@@ -60,7 +60,7 @@ export function BalanceCard() {
         <p className="text-xs text-muted-foreground">
           +20.1% desde o último mês
         </p>
-        <ChartContainer config={chartConfig} className="h-[80px] w-full">
+        <ChartContainer config={chartConfig} className="h-[80px] w-full sm:block hidden">
           <LineChart
             data={data}
             margin={{

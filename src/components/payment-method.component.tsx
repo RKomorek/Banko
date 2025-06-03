@@ -178,7 +178,7 @@ export function CardPaymentMethod({
           value={paymentType}
           onValueChange={setPaymentType}
           defaultValue="cartao"
-          className="grid grid-cols-3 gap-4"
+          className="grid sm:grid-cols-3 grid-cols-1 gap-4"
         >
           {["cartao", "boleto", "pix"].map((type) => (
             <div key={type}>
@@ -201,7 +201,7 @@ export function CardPaymentMethod({
             value={movingType}
             onValueChange={setMovingType}
             defaultValue="entrada"
-            className="grid grid-cols-2 gap-4 w-3xs"
+            className="grid sm:grid-cols-2 grid-cols-1 gap-4 w-3xs"
           >
             {["entrada", "saida"].map((type) => (
               <div key={type}>
@@ -255,12 +255,12 @@ export function CardPaymentMethod({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex items-center justify-between gap-2">
-        <Button variant="outline" onClick={handleCancel} className="">
+      <CardFooter className="flex sm:flex-row flex-col items-center justify-between gap-2">
+        <Button variant="outline" onClick={handleCancel} className="w-full sm:w-auto">
           Cancelar
         </Button>
 
-        <Button onClick={handleSubmit} className="">
+        <Button onClick={handleSubmit} className="w-full sm:w-auto">
           {initialData ? "Salvar alterações" : "Salvar transação"}
         </Button>
       </CardFooter>
