@@ -27,7 +27,7 @@ const items = [
   { title: "Página inicial", url: "/", icon: Home },
   { title: "Transações", url: "/transactions", icon: Repeat },
   { title: "Investimentos", url: "/investments", icon: LineChart },
-  { title: "Outros Serviços", url: "/services", icon: Grid },
+  { title: "Outros serviços", url: "/services", icon: Grid },
 ];
 
 function getInitials(name?: string): string | null {
@@ -52,7 +52,7 @@ export function AppSidebar() {
       router.push("/login");
     }
   }, []);
-  
+
   const initials = getInitials(user?.user_metadata.name);
   if (!isReady) return null;
 

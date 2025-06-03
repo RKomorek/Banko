@@ -13,6 +13,8 @@ import { DeleteTransactionModal } from "../deleteTransactionModal.component";
 import { Row } from "@tanstack/react-table";
 import { ITransaction } from "@/interfaces/transaction.interface";
 import { EditTransactionModal } from "../editTransactionModal.component";
+import { useAppContext } from "@/context/app.context";
+import { updateAccountBalance } from "@/services/account.service";
 
 export default function ActionsColumnsTransactions({
   row,
@@ -24,14 +26,41 @@ export default function ActionsColumnsTransactions({
   onTransactionUpdated: () => void;
 }) {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] = useState<ITransaction | null>(null);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<ITransaction | null>(null);
+  const { accountId, setSaldo, saldo } = useAppContext();
 
   async function handleDelete() {
-    const { id } = row.original;
+    const { id, valor, movimentacao } = row.original;
     if (!id) {
       toast.error("ID da transação não encontrado.");
       return;
     }
+    if (!accountId) {
+      toast.error("Conta não encontrada.");
+      return;
+    }
+
+    // Lógica de estorno do saldo
+    let delta = 0;
+    if (movimentacao === "entrada") {
+      delta = -valor; // Remove do saldo
+    } else if (movimentacao === "saida") {
+      delta = valor; // Reembolsa no saldo
+    }
+
+    const { error: balanceError } = await updateAccountBalance(
+      accountId,
+      delta
+    );
+
+    if (balanceError) {
+      console.error("Erro ao atualizar saldo:", balanceError);
+      toast.error("Transação editada, mas erro ao atualizar saldo.");
+    } else {
+      setSaldo((typeof saldo === "number" ? saldo : 0) + delta);
+    }
+
     const { error } = await deleteTransactionById(id);
     if (error) {
       console.error("Erro ao excluir transação:", error);
@@ -79,7 +108,7 @@ export default function ActionsColumnsTransactions({
           onClose={() => setSelectedTransaction(null)}
           transaction={selectedTransaction}
           onSuccess={() => {
-            onTransactionUpdated(); 
+            onTransactionUpdated();
           }}
         />
       )}

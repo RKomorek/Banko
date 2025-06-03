@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 import { ITransaction } from "@/interfaces/transaction.interface";
 import { CardPaymentMethod } from "./payment-method.component";
@@ -18,10 +18,7 @@ export function EditTransactionModal({
 }: EditTransactionModalProps) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Editar Transação</DialogTitle>
-        </DialogHeader>
+      <DialogContent className="bg-transparent border-0 p-0">
         <CardPaymentMethod
           initialData={transaction}
           onSuccess={() => {

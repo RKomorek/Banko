@@ -14,7 +14,10 @@ import MoneyInput from "./ui/money-input";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Input } from "./ui/input";
 import { BanknoteArrowDown, BanknoteArrowUp } from "lucide-react";
-import { addTransaction, updateTransaction } from "@/services/transaction.service";
+import {
+  addTransaction,
+  updateTransaction,
+} from "@/services/transaction.service";
 import { updateAccountBalance } from "@/services/account.service";
 import { useAppContext } from "@/context/app.context";
 import { toast } from "sonner";
@@ -73,6 +76,41 @@ export function CardPaymentMethod({
         console.error("Erro ao editar transação:", error);
         toast.error("Erro ao editar transação. Tente novamente.");
       } else {
+        let delta = 0;
+        if (movingType === initialData.movimentacao) {
+          // Mesmo tipo, só ajusta a diferença
+          delta =
+            movingType === "entrada"
+              ? moneyValue - initialData.valor
+              : -(moneyValue - initialData.valor);
+        } else {
+          // Tipo mudou: desfaz o valor antigo e aplica o novo
+          if (
+            movingType === "entrada" &&
+            initialData.movimentacao === "saida"
+          ) {
+            // De saída para entrada: soma o antigo (removendo a saída) e soma o novo (adicionando a entrada)
+            delta =  moneyValue;
+          } else if (
+            movingType === "saida" &&
+            initialData.movimentacao === "entrada"
+          ) {
+            // De entrada para saída: subtrai o antigo (removendo a entrada) e subtrai o novo (adicionando a saída)
+            delta = -moneyValue;
+          }
+        }
+
+        const { error: balanceError } = await updateAccountBalance(
+          accountId,
+          delta
+        );
+
+        if (balanceError) {
+          console.error("Erro ao atualizar saldo:", balanceError);
+          toast.error("Transação editada, mas erro ao atualizar saldo.");
+        } else {
+          setSaldo((typeof saldo === "number" ? saldo : 0) + delta);
+        }
         toast.success("Transação editada com sucesso!");
         onSuccess?.();
       }
@@ -94,7 +132,10 @@ export function CardPaymentMethod({
         toast.error("Erro ao cadastrar transação. Tente novamente.");
       } else {
         const delta = movingType === "entrada" ? moneyValue : -moneyValue;
-        const { error: balanceError } = await updateAccountBalance(accountId, delta);
+        const { error: balanceError } = await updateAccountBalance(
+          accountId,
+          delta
+        );
 
         if (balanceError) {
           console.error("Erro ao atualizar saldo:", balanceError);
@@ -105,19 +146,27 @@ export function CardPaymentMethod({
           console.log("Transação cadastrada:", data);
         }
 
-        setDescricao("");
-        setPaymentType("cartao");
-        setMovingType("entrada");
-        setMoneyValue(0);
-        onSuccess?.();
+        handleDelete();
       }
     }
   }
 
+  function handleDelete() {
+    setDescricao("");
+    setPaymentType("cartao");
+    setMovingType("entrada");
+    setMoneyValue(0);
+  }
+  const handleCancel = () => {
+    handleDelete();
+    onCancel?.();
+  };
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{initialData ? "Editar Transação" : "Nova Transação"}</CardTitle>
+        <CardTitle>
+          {initialData ? "Editar transação" : "Nova transação"}
+        </CardTitle>
         <CardDescription>
           Escolha o método de pagamento e insira o valor.
         </CardDescription>
@@ -154,11 +203,19 @@ export function CardPaymentMethod({
           >
             {["entrada", "saida"].map((type) => (
               <div key={type}>
-                <RadioGroupItem value={type} id={type} className="peer sr-only" />
+                <RadioGroupItem
+                  value={type}
+                  id={type}
+                  className="peer sr-only"
+                />
                 <Label
                   htmlFor={type}
                   className={`flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground
-                    ${type === "entrada" ? "peer-data-[state=checked]:border-green-600" : "peer-data-[state=checked]:border-red-600"}`}
+                    ${
+                      type === "entrada"
+                        ? "peer-data-[state=checked]:border-green-600"
+                        : "peer-data-[state=checked]:border-red-600"
+                    }`}
                 >
                   {type === "entrada" ? (
                     <BanknoteArrowUp className="mb-1 h-6 w-6" />
@@ -180,7 +237,9 @@ export function CardPaymentMethod({
               placeholder="R$ 0,00"
               onChange={setMoneyValue}
               value={moneyValue}
-              className={`${movingType === "entrada" ? "text-green-600" : "text-red-600"}`}
+              className={`${
+                movingType === "entrada" ? "text-green-600" : "text-red-600"
+              }`}
             />
           </div>
           <div className="grid gap-1">
@@ -195,13 +254,12 @@ export function CardPaymentMethod({
         </div>
       </CardContent>
       <CardFooter className="flex items-center justify-between gap-2">
-        {onCancel && (
-          <Button variant="outline" onClick={onCancel} className="">
-            Cancelar
-          </Button>
-        )}
+        <Button variant="outline" onClick={handleCancel} className="">
+          Cancelar
+        </Button>
+
         <Button onClick={handleSubmit} className="">
-          {initialData ? "Salvar Alterações" : "Continuar"}
+          {initialData ? "Salvar alterações" : "Salvar transação"}
         </Button>
       </CardFooter>
     </Card>
