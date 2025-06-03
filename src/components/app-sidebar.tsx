@@ -14,7 +14,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "./ui/modeToggle";
@@ -46,7 +45,14 @@ export function AppSidebar() {
   const { open, setOpen, isReady } = useSidebar();
   const { user } = useAppContext();
   const router = useRouter();
-
+  
+  useEffect(() => {
+    const session = localStorage.getItem("sb-xrnhzpiwgzhjcmyiuxfv-auth-token");
+    if (!session) {
+      router.push("/login");
+    }
+  }, []);
+  
   const initials = getInitials(user?.user_metadata.name);
   if (!isReady) return null;
 
@@ -55,12 +61,6 @@ export function AppSidebar() {
     router.replace("/login");
   }
 
-  useEffect(() => {
-    const session = localStorage.getItem("sb-xrnhzpiwgzhjcmyiuxfv-auth-token");
-    if (!session) {
-      router.push("/login");
-    }
-  }, []);
 
   return (
     <>
