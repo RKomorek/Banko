@@ -1,54 +1,71 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { LineChart, Line } from "recharts";
+import { LineChart, Line, CartesianGrid } from "recharts";
 import { ChartContainer } from "./ui/chart";
 import { getAccountByUserId } from "@/services/account.service";
-import { useEffect } from "react";
-import { useAppContext } from "@/context/app.context";
 import { getUserByAuthId } from "@/services/users.service";
+import { getTransactionsByAccountId } from "@/services/transaction.service";
+import { useAppContext } from "@/context/app.context";
 import { formatCurrency } from "@/utils/formatCurrency";
 
-const data = [
-  { revenue: 10400, subscription: 240 },
-  { revenue: 14405, subscription: 300 },
-  { revenue: 9400, subscription: 200 },
-  { revenue: 8200, subscription: 278 },
-  { revenue: 7000, subscription: 189 },
-  { revenue: 9600, subscription: 239 },
-  { revenue: 11244, subscription: 278 },
-  { revenue: 26475, subscription: 189 },
-];
-
 const chartConfig = {
-  revenue: {
-    label: "Revenue",
+  saldo: {
+    label: "Saldo",
     color: "hsl(var(--primary))",
-  },
-  subscription: {
-    label: "Subscriptions",
-    color: "hsl(var(--secondary))",
   },
 };
 
 export function BalanceCard() {
   const { user, setSaldo, saldo } = useAppContext();
+  const [chartData, setChartData] = useState<{ saldo: number; label: string }[]>([]);
 
   useEffect(() => {
-    fetchAccountByUserId();
+    if (user) fetchData();
   }, [user]);
 
-  async function fetchAccountByUserId() {
-    if (!user) return;
-    const { data: appUser } = await getUserByAuthId(user.id);
-    const { data: accountData, error } = await getAccountByUserId(appUser.id);
-    
-    if (error) {
-      console.error("Erro ao buscar conta:", error.message);
-    } else {
-      setSaldo(accountData.saldo);
-      console.log("Dados da conta:", accountData);
+  if (!user) return null;
+  const userId = user.id;
+
+  async function fetchData() {
+    try {
+      const { data: appUser } = await getUserByAuthId(userId);
+      const { data: account, error: accError } = await getAccountByUserId(appUser.id);
+      if (accError || !account) throw new Error("Erro ao buscar conta");
+
+      setSaldo(account.saldo);
+
+      const { data: transactions, error: transError } = await getTransactionsByAccountId(account.id);
+      if (transError || !transactions) throw new Error("Erro ao buscar transações");
+
+      const ultimas10 = transactions.slice(-10);
+      let saldoAcumulado = account.saldo;
+      const acumulado = [{ saldo: saldoAcumulado, label: "Saldo Inicial" }];
+
+      for (const { valor, movimentacao, created_at } of ultimas10) {
+        saldoAcumulado += movimentacao === "saida" ? -Math.abs(Number(valor)) : Math.abs(Number(valor));
+        acumulado.push({
+          saldo: saldoAcumulado,
+          label: new Date(created_at).toLocaleDateString("pt-BR"),
+        });
+      }
+
+      const ultimaTransacao = transactions.reduce((prev, curr) =>
+        new Date(curr.created_at).getTime() > new Date(prev.created_at).getTime() ? curr : prev
+      );
+      if (ultimaTransacao) {
+        acumulado.push({
+          saldo: saldoAcumulado,
+          label: `Última Transação (${new Date(ultimaTransacao.created_at).toLocaleDateString("pt-BR")})`,
+        });
+      }
+
+      setChartData(acumulado.reverse());
+    } catch (err) {
+      console.error(err);
     }
   }
-
 
   return (
     <Card>
@@ -57,28 +74,14 @@ export function BalanceCard() {
       </CardHeader>
       <CardContent className="pb-0">
         <div className="text-2xl font-bold">{formatCurrency(saldo)}</div>
-        <p className="text-xs text-muted-foreground">
-          +20.1% desde o último mês
-        </p>
+        <p className="text-xs text-muted-foreground">Histórico das últimas transações</p>
         <ChartContainer config={chartConfig} className="h-[80px] w-full sm:block hidden">
           <LineChart
-            data={data}
-            margin={{
-              top: 5,
-              right: 10,
-              left: 10,
-              bottom: 0,
-            }}
+            data={chartData}
+            margin={{ top: 5, right: 10, left: 10, bottom: 0 }}
           >
-            <Line
-              type="monotone"
-              strokeWidth={2}
-              dataKey="revenue"
-              stroke="var(--primary)"
-              activeDot={{
-                r: 6,
-              }}
-            />
+            <CartesianGrid />
+            <Line type="monotone" strokeWidth={2} dataKey="saldo" stroke="var(--primary)" activeDot={{ r: 6 }} />
           </LineChart>
         </ChartContainer>
       </CardContent>
