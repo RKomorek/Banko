@@ -64,9 +64,14 @@ Para executar Banko localmente, siga os passos abaixo:
 3. Instale as dependências:
   npm install
   
+4. Criei na base do projeto um arquivo " .env "
 
-4. Inicie o servidor de desenvolvimento:
+5. Configure o ".env" com as seguintes informações:
+"API_URL=<Url do Supabase>
+SUPABASE_ANON_KEY=<Chave pública do Supabase>"
+
+6. Inicie o servidor de desenvolvimento:
   npm run dev
 
-5. O projeto será iniciado e estará disponível em:
+7. O projeto será iniciado e estará disponível em:
   http://localhost:3000
