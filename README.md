@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Banko
 
-## Getting Started
+Banko é um gerenciador de transações financeiras que permite o acompanhamento de operações via **boleto, cartão e pix**. Com uma interface moderna e intuitiva, os usuários podem registrar **entradas e saídas**, definir valores, adicionar descrições e contar com o salvamento automático da data atual.
 
-First, run the development server:
+## 🚀 Tecnologias utilizadas
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Este projeto foi desenvolvido com as seguintes tecnologias:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- [Next.js](https://nextjs.org/) - Framework React para aplicações web
+- [Shard CN UI](https://ui.shadcn.com/) - Biblioteca de componentes UI
+- [Tailwind CSS](https://tailwindcss.com/) - Estilização rápida e eficiente
+- [Supabase](https://supabase.com/) - Banco de dados Postgres e autenticação
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📂 Estrutura do banco de dados
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+O projeto utiliza **Supabase** com um banco de dados Postgres estruturado da seguinte forma:
 
-## Learn More
+- **users**: Contém informações dos usuários cadastrados
+- **account**: Armazena dados relacionados às contas dos usuários
+- **transactions**: Gerencia as transações financeiras
 
-To learn more about Next.js, take a look at the following resources:
+## 🖥️ Estrutura da aplicação
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Banko conta com duas páginas principais e duas para teste de redirecionamento da tela de erro personalizada:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Página Inicial** - Visão geral das finanças
+- **Página de Transações** - Exibição e gerenciamento de operações financeiras com as opções de editar e excluir via por modal.
+- **Página de Investimentos** - Ainda não implementada, exibe uma tela personalizada de erro `404`
+- **Página de Outros Serviços** - Ainda não implementada, exibe uma tela personalizada de erro `404`
 
-## Deploy on Vercel
+## 🗺️ Navegação
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+A navegação da aplicação ocorre através de um **sidebar**, que possui os seguintes recursos:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Expansão/Recolhimento**: Pode ser minimizado ao clicar na logo
+- **Tema**: Possibilidade de alternar entre modos claro e escuro
+- **Conta**: Exibição de informações do perfil do usuário
+
+## 🎨 Protótipo no Figma
+
+Para visualizar o design da interface e fluxo da aplicação, acesse o protótipo no Figma através do link abaixo:
+
+🔗 [Protótipo Banko - Figma](https://www.figma.com/design/kST3RFJBwiKfNEdj03AwoY/Banko?node-id=1-3&t=6hVAH0v1dPyq3262-1)
+
+## 🧑‍💻 Integrantes do projeto
+
+Este projeto foi desenvolvido por:
+
+- **Ana Viviane Souto Pinheiro**
+- **Caroline Vitória Valério dos Santos**
+- **Marcelo Sabino Machado**
+- **Rafael Komorek de Aquino**
+
+## ▶️ Como rodar o projeto
+
+Para executar Banko localmente, siga os passos abaixo:
+
+1. Clone este repositório:
+  git clone https://github.com/RKomorek/Banko.git
+  
+2. Navegue até o diretório do projeto:
+  cd banko
+  
+3. Instale as dependências:
+  npm install
+  
+4. Criei na base do projeto um arquivo " .env "
+
+5. Configure o ".env" com as seguintes informações:
+"API_URL=<Url do Supabase>
+SUPABASE_ANON_KEY=<Chave pública do Supabase>"
+
+6. Inicie o servidor de desenvolvimento:
+  npm run dev
+
+7. O projeto será iniciado e estará disponível em:
+  http://localhost:3000
