@@ -2,9 +2,10 @@ import { ColumnDef } from "@tanstack/react-table";
 import { formatCurrencyBRL } from "@/lib/formatters";
 import { ITransaction } from "@/interfaces/transaction.interface";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Paperclip, Receipt } from "lucide-react";
 import ActionsColumnsTransactions from "@/components/actionsColumns.tsx/actionsColumnsTransactions";
 import { Icons } from "@/components/ui/icons";
+import { TransactionReceipt } from "@/components/transaction-receipt.component";
 
 export function getTransactionColumns(
   onTransactionDeleted: () => Promise<void>,
@@ -101,13 +102,11 @@ export function getTransactionColumns(
       const movimentacao = row.getValue("movimentacao") as string;
       return (
         <span>
-          {/* {movimentacao === "entrada" ? "🔺" : "🔻"} */}
           {movimentacao.charAt(0).toUpperCase() + movimentacao.slice(1)}
         </span>
       );
     },
   },
-
   {
     accessorKey: "valor",
     header: ({ column }) => {
@@ -133,15 +132,44 @@ export function getTransactionColumns(
     },
   },
   {
+    accessorKey: "attachments",
+    header: "Anexos",
+    cell: ({ row }) => {
+      const attachments = row.original.attachments;
+      const hasAttachments = attachments && attachments.length > 0;
+      
+      return (
+        <div className="flex items-center gap-2">
+          {hasAttachments ? (
+            <span className="flex items-center gap-1 text-sm text-muted-foreground">
+              <Paperclip className="h-4 w-4" />
+              {attachments.length}
+            </span>
+          ) : (
+            <span className="text-sm text-muted-foreground">-</span>
+          )}
+        </div>
+      );
+    },
+  },
+  {
     id: "actions",
     header: "Ações",
     cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <TransactionReceipt transactionId={row.original.id!}>
+          <Button variant="outline" size="sm">
+            <Receipt className="h-4 w-4 mr-2" />
+            Recibo
+          </Button>
+        </TransactionReceipt>
         <ActionsColumnsTransactions
           row={row}
           onTransactionDeleted={onTransactionDeleted}
           onTransactionUpdated={onTransactionUpdated}
         />
-      ),
+      </div>
+    ),
   },
 ];
 }
