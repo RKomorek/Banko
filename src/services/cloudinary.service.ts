@@ -9,10 +9,16 @@ export interface CloudinaryUploadResult {
   created_at: string
 }
 
+export interface CloudinaryError {
+  message: string
+  code?: string
+  status?: number
+}
+
 export async function uploadToCloudinary(
   file: File,
   folder: string = 'banko-transactions'
-): Promise<{ data: CloudinaryUploadResult | null; error: any }> {
+): Promise<{ data: CloudinaryUploadResult | null; error: CloudinaryError | null }> {
   try {
     console.log('🚀 Iniciando upload para Cloudinary:', { fileName: file.name, folder })
     
@@ -58,11 +64,16 @@ export async function uploadToCloudinary(
     return { data: result.data, error: null }
   } catch (error) {
     console.error('❌ Erro no upload para Cloudinary:', error)
-    return { data: null, error }
+    return { 
+      data: null, 
+      error: { 
+        message: error instanceof Error ? error.message : 'Erro desconhecido no upload' 
+      }
+    }
   }
 }
 
-export async function deleteFromCloudinary(publicId: string): Promise<{ error: any }> {
+export async function deleteFromCloudinary(publicId: string): Promise<{ error: CloudinaryError | null }> {
   try {
     console.log('🗑️ Deletando arquivo do Cloudinary:', publicId)
     
@@ -81,7 +92,11 @@ export async function deleteFromCloudinary(publicId: string): Promise<{ error: a
     return { error: null }
   } catch (error) {
     console.error('❌ Erro ao deletar arquivo do Cloudinary:', error)
-    return { error }
+    return { 
+      error: { 
+        message: error instanceof Error ? error.message : 'Erro desconhecido ao deletar' 
+      }
+    }
   }
 }
 
