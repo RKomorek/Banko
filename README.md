@@ -56,7 +56,7 @@ Um sistema bancário moderno desenvolvido com Next.js 15, TypeScript e Supabase,
 
 ### 1. Clone o repositório
 ```bash
-git clone https://github.com/seu-usuario/banko.git
+git clone https://github.com/RKomorek/Banko.git
 cd banko
 ```
 
