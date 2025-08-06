@@ -17,11 +17,11 @@ import {
 
 import Image from "next/image";
 import Link from "next/link";
-import { ModeToggle } from "./ui/modeToggle";
 import { cn } from "@/lib/utils";
 import { useAppContext } from "@/context/app.context";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { ModeToggle } from "./ui/modeToggle";
 
 // Menu items
 const items = [

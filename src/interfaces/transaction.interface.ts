@@ -7,7 +7,7 @@ export interface ITransaction {
   data: string; // yyyy-mm-dd
   created_at?: string; // yyyy-mm-ddTHH:MM:SS
   movimentacao: "entrada" | "saida";
-  attachments?: ITransactionAttachment[];
+  transaction_attachments?: ITransactionAttachment[];
 }
 
 export interface ITransactionAttachment {

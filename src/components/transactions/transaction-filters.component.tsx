@@ -161,9 +161,9 @@ export function TransactionFilters({ transactions, onFilterChange }: Transaction
               </Select>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 flex flex-col justify-end">
               <Label htmlFor="date">Data</Label>
-              <Input
+              <Input className="w-1/4"
                 type="date"
                 value={dateFilter}
                 onChange={(e) => {

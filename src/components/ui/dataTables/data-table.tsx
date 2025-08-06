@@ -9,16 +9,9 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import * as React from "react";
 import { DataTablePagination } from "./data-table-pagination";
+import { Table, TableHeader, TableBody, TableCell, TableHead, TableRow } from "../table";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

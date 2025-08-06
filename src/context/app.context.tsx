@@ -16,7 +16,7 @@ const AppContext = createContext<AppContextType>({
   user: null,
   loading: true,
   accountId: null,
-   saldo: 0,
+  saldo: 0,
   setSaldo: () => {},
 });
 
@@ -30,41 +30,63 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const getSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      const currentUser = data.session?.user ?? null;
-      setUser(currentUser);
-      setLoading(false);
+      try {
+        console.log('🔍 Iniciando verificação de sessão...');
+        
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('❌ Erro ao obter sessão:', error);
+          setLoading(false);
+          return;
+        }
 
-      if (currentUser) {
-        // Busca o id do usuário na tabela users
-        const { data: userData, error: userError } = await supabase
-          .from("users")
-          .select("id")
-          .eq("auth_user_id", currentUser.id)
-          .single();
+        const currentUser = data.session?.user ?? null;
+        setUser(currentUser);
+        setLoading(false);
 
-        if (userError) {
-          console.error("Erro ao buscar usuário:", userError.message);
-        } else {
-          // Busca o account_id na tabela accounts
-          const { data: accountData, error: accountError } = await supabase
-            .from("accounts")
+        if (currentUser) {
+          console.log('👤 Usuário encontrado:', currentUser.email);
+          
+          // Busca o id do usuário na tabela users
+          const { data: userData, error: userError } = await supabase
+            .from("users")
             .select("id")
-            .eq("user_id", userData.id)
+            .eq("auth_user_id", currentUser.id)
             .single();
 
-          if (accountError) {
-            console.error("Erro ao buscar conta:", accountError.message);
+          if (userError) {
+            console.error("❌ Erro ao buscar usuário:", userError.message);
           } else {
-            setAccountId(accountData.id);
-          }
-        }
-      }
+            console.log('✅ Usuário encontrado na tabela users');
+            
+            // Busca o account_id na tabela accounts
+            const { data: accountData, error: accountError } = await supabase
+              .from("accounts")
+              .select("id")
+              .eq("user_id", userData.id)
+              .single();
 
-      // Redireciona se não estiver logado e tentando acessar rota protegida
-      const isProtectedRoute = ["/", "/dashboard"].includes(pathname);
-      if (!data.session && isProtectedRoute) {
-        router.replace("/login");
+            if (accountError) {
+              console.error("❌ Erro ao buscar conta:", accountError.message);
+            } else {
+              console.log('✅ Conta encontrada:', accountData.id);
+              setAccountId(accountData.id);
+            }
+          }
+        } else {
+          console.log('👤 Nenhum usuário logado');
+        }
+
+        // Redireciona se não estiver logado e tentando acessar rota protegida
+        const isProtectedRoute = ["/", "/dashboard"].includes(pathname);
+        if (!data.session && isProtectedRoute) {
+          console.log('🔄 Redirecionando para login...');
+          router.replace("/login");
+        }
+      } catch (error) {
+        console.error('❌ Erro geral no getSession:', error);
+        setLoading(false);
       }
     };
 
@@ -73,6 +95,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     // opcional: escuta mudanças no auth
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
+        console.log('🔄 Mudança no estado de autenticação:', _event);
         setUser(session?.user ?? null);
       }
     );
@@ -80,7 +103,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       listener.subscription.unsubscribe();
     };
-  }, [pathname]);
+  }, [pathname, router]);
 
   return (
     <AppContext.Provider value={{ user, loading, accountId, saldo, setSaldo }}>

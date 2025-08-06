@@ -2,16 +2,14 @@ import { ColumnDef } from "@tanstack/react-table";
 import { formatCurrencyBRL } from "@/lib/formatters";
 import { ITransaction } from "@/interfaces/transaction.interface";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, Paperclip, Receipt } from "lucide-react";
-import ActionsColumnsTransactions from "@/components/actionsColumns.tsx/actionsColumnsTransactions";
+import { ArrowUpDown, Paperclip, Receipt, File, FileText } from "lucide-react";
 import { Icons } from "@/components/ui/icons";
-import { TransactionReceipt } from "@/components/transaction-receipt.component";
+import { TransactionReceipt } from "@/components/transactions/transaction-receipt.component";
+import { Badge } from "@/components/ui/badge";
+import ActionsColumnsTransactions from "@/components/actionsColumns/actionsColumnsTransactions";
 
-export function getTransactionColumns(
-  onTransactionDeleted: () => Promise<void>,
-  onTransactionUpdated: () => Promise<void>
-): ColumnDef<ITransaction>[] {
-  return [
+
+export const columns: ColumnDef<ITransaction>[] = [
   {
     accessorKey: "created_at",
     header: ({ column }) => {
@@ -135,19 +133,49 @@ export function getTransactionColumns(
     accessorKey: "attachments",
     header: "Anexos",
     cell: ({ row }) => {
-      const attachments = row.original.attachments;
+      const attachments = row.original.transaction_attachments;
       const hasAttachments = attachments && attachments.length > 0;
       
+      if (!hasAttachments) {
+        return <span className="text-sm text-muted-foreground">-</span>;
+      }
+
       return (
         <div className="flex items-center gap-2">
-          {hasAttachments ? (
-            <span className="flex items-center gap-1 text-sm text-muted-foreground">
-              <Paperclip className="h-4 w-4" />
-              {attachments.length}
-            </span>
-          ) : (
-            <span className="text-sm text-muted-foreground">-</span>
+          {/* Preview da primeira imagem */}
+          {attachments.some(att => att.file_type.startsWith('image/')) && (
+            <div className="relative">
+              {attachments.find(att => att.file_type.startsWith('image/')) && (
+                <img
+                  src={attachments.find(att => att.file_type.startsWith('image/'))!.file_url}
+                  alt="Preview"
+                  className="h-8 w-8 rounded object-cover border"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              )}
+            </div>
           )}
+          
+          {/* Badge com contagem */}
+          <Badge variant="secondary" className="flex items-center gap-1">
+            <Paperclip className="h-3 w-3" />
+            {attachments.length}
+          </Badge>
+          
+          {/* Ícones por tipo */}
+          <div className="flex items-center gap-1">
+            {attachments.map((attachment, index) => {
+              if (attachment.file_type.startsWith('image/')) {
+                return <File key={index} className="h-3 w-3 text-blue-500" />;
+              } else if (attachment.file_type === 'application/pdf') {
+                return <FileText key={index} className="h-3 w-3 text-red-500" />;
+              } else {
+                return <File key={index} className="h-3 w-3 text-gray-500" />;
+              }
+            })}
+          </div>
         </div>
       );
     },
@@ -165,11 +193,10 @@ export function getTransactionColumns(
         </TransactionReceipt>
         <ActionsColumnsTransactions
           row={row}
-          onTransactionDeleted={onTransactionDeleted}
-          onTransactionUpdated={onTransactionUpdated}
+          onTransactionDeleted={async () => {}}
+          onTransactionUpdated={async () => {}}
         />
       </div>
     ),
   },
 ];
-}

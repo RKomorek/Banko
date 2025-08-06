@@ -9,7 +9,7 @@ import {
   SelectContent,
   SelectGroup,
   SelectTrigger,
-} from "./ui/select";
+} from "@/components/ui/select";
 import { Trash } from "lucide-react";
 
 interface TransactionSuggestionsProps {

@@ -10,8 +10,6 @@ import {
 } from "./ui/card";
 import { Icons } from "./ui/icons";
 import { Label } from "./ui/label";
-import MoneyInput from "./ui/money-input";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { BanknoteArrowDown, BanknoteArrowUp } from "lucide-react";
 import {
   addTransaction,
@@ -21,8 +19,10 @@ import { updateAccountBalance } from "@/services/account.service";
 import { useAppContext } from "@/context/app.context";
 import { toast } from "sonner";
 import { ITransaction } from "@/interfaces/transaction.interface";
-import { TransactionSuggestions } from "@/components/transaction-suggestions.component";
 import { FileUpload } from "@/components/file-upload.component";
+import { TransactionSuggestions } from "./transactions/transaction-suggestions.component";
+import MoneyInput from "./ui/money-input";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
 export function CardPaymentMethod({
   initialData,

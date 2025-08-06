@@ -1,10 +1,10 @@
 "use client";
 
+import { WelcomeCard } from "@/components/welcome-card.component";
 import { BalanceCard } from "@/components/balance-card.component";
 import { CardPaymentMethod } from "@/components/payment-method.component";
-import { WelcomeCard } from "@/components/welcome-card.component";
-import { FinancialChart } from "@/components/financial-chart.component";
-import { FinancialMetrics } from "@/components/financial-metrics.component";
+import { FinancialChart } from "@/components/dashboard/financial-chart.component";
+import { FinancialMetrics } from "@/components/dashboard/financial-metrics.component";
 import { cn } from "@/lib/utils";
 
 function Container({
@@ -28,29 +28,18 @@ export default function Home() {
       {/* Top Section - Welcome, Balance and New Transaction */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1 space-y-6">
-          <Container>
-            <WelcomeCard />
-          </Container>
+          <Container><WelcomeCard /></Container>
         </div>
         <div className="lg:col-span-1 space-y-6">
-          <Container>
-            <BalanceCard />
-          </Container>
+          <Container><BalanceCard /></Container>
         </div>
         <div className="lg:col-span-1 row-span-2 space-y-6">
-          <Container>
-            <CardPaymentMethod />
-          </Container>
-          <Container>
-            <FinancialMetrics />
-          </Container>
+          <Container><CardPaymentMethod /></Container>
+          <Container><FinancialMetrics /></Container>
         </div>
         <div className="lg:col-span-2 row-span-2 space-y-6">
-          <Container>
-            <FinancialChart />
-          </Container>
+          <Container><FinancialChart /></Container>
         </div>
-        
       </div>
     </main>
   );
