@@ -1,4 +1,4 @@
-💰 Banko
+#💰 Banko
 
 Banko é um gerenciador de transações financeiras que permite o acompanhamento de operações via **boleto, cartão e Pix**.
 
