@@ -10,9 +10,6 @@ import {
 } from "./ui/card";
 import { Icons } from "./ui/icons";
 import { Label } from "./ui/label";
-import MoneyInput from "./ui/money-input";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { Input } from "./ui/input";
 import { BanknoteArrowDown, BanknoteArrowUp } from "lucide-react";
 import {
   addTransaction,
@@ -22,6 +19,10 @@ import { updateAccountBalance } from "@/services/account.service";
 import { useAppContext } from "@/context/app.context";
 import { toast } from "sonner";
 import { ITransaction } from "@/interfaces/transaction.interface";
+import { FileUpload } from "@/components/file-upload.component";
+import { TransactionSuggestions } from "./transactions/transaction-suggestions.component";
+import MoneyInput from "./ui/money-input";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
 export function CardPaymentMethod({
   initialData,
@@ -38,6 +39,7 @@ export function CardPaymentMethod({
   const [paymentType, setPaymentType] = useState<string>("cartao");
   const [movingType, setMovingType] = useState<string>("entrada");
   const [descricao, setDescricao] = useState<string>("");
+  const [attachments, setAttachments] = useState<File[]>([]);
 
   const { accountId, setSaldo, saldo } = useAppContext();
 
@@ -58,6 +60,12 @@ export function CardPaymentMethod({
     if (!moneyValue || !descricao) {
       toast.error("Preencha todos os campos corretamente.");
       return;
+    }
+
+    // Log dos anexos para demonstração
+    if (attachments.length > 0) {
+      console.log("Anexos selecionados:", attachments);
+      toast.success(`${attachments.length} anexo(s) selecionado(s)`);
     }
 
     if (initialData) {
@@ -127,7 +135,7 @@ export function CardPaymentMethod({
         movimentacao: movingType as "entrada" | "saida",
       };
 
-      const { data, error } = await addTransaction(transactionData);
+      const { data, error } = await addTransaction(transactionData, attachments);
 
       if (error) {
         console.error("Erro ao cadastrar transação:", error);
@@ -246,11 +254,22 @@ export function CardPaymentMethod({
           </div>
           <div className="grid gap-1">
             <Label htmlFor="descricao">Descrição</Label>
-            <Input
-              name="descricao"
+            <TransactionSuggestions
               value={descricao}
+              onValueChange={setDescricao}
               placeholder="Descrição da transação"
-              onChange={(e) => setDescricao(e.target.value)}
+              label="Descrição"
+            />
+          </div>
+          
+          {/* Upload de anexos */}
+          <div className="grid gap-1">
+            <Label>Anexos (opcional)</Label>
+            <FileUpload
+              onFilesChange={setAttachments}
+              maxFiles={5}
+              maxSize={10}
+              acceptedTypes={["image/*", "application/pdf", "text/*"]}
             />
           </div>
         </div>

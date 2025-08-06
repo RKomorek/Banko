@@ -1,39 +1,17 @@
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { LineChart, Line } from "recharts";
-import { ChartContainer } from "./ui/chart";
-import { getAccountByUserId } from "@/services/account.service";
+"use client";
+
 import { useEffect } from "react";
-import { useAppContext } from "@/context/app.context";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { getAccountByUserId } from "@/services/account.service";
 import { getUserByAuthId } from "@/services/users.service";
+import { useAppContext } from "@/context/app.context";
 import { formatCurrency } from "@/utils/formatCurrency";
-
-const data = [
-  { revenue: 10400, subscription: 240 },
-  { revenue: 14405, subscription: 300 },
-  { revenue: 9400, subscription: 200 },
-  { revenue: 8200, subscription: 278 },
-  { revenue: 7000, subscription: 189 },
-  { revenue: 9600, subscription: 239 },
-  { revenue: 11244, subscription: 278 },
-  { revenue: 26475, subscription: 189 },
-];
-
-const chartConfig = {
-  revenue: {
-    label: "Revenue",
-    color: "hsl(var(--primary))",
-  },
-  subscription: {
-    label: "Subscriptions",
-    color: "hsl(var(--secondary))",
-  },
-};
 
 export function BalanceCard() {
   const { user, setSaldo, saldo } = useAppContext();
 
   useEffect(() => {
-    fetchAccountByUserId();
+    if (user) fetchAccountByUserId();
   }, [user]);
 
   async function fetchAccountByUserId() {
@@ -49,38 +27,16 @@ export function BalanceCard() {
     }
   }
 
-
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle>Saldo</CardTitle>
+        <CardTitle>Saldo Atual</CardTitle>
       </CardHeader>
-      <CardContent className="pb-0">
-        <div className="text-2xl font-bold">{formatCurrency(saldo)}</div>
+      <CardContent>
+        <div className="text-3xl font-bold">{formatCurrency(saldo)}</div>
         <p className="text-xs text-muted-foreground">
-          +20.1% desde o último mês
+          Saldo disponível em sua conta
         </p>
-        <ChartContainer config={chartConfig} className="h-[80px] w-full sm:block hidden">
-          <LineChart
-            data={data}
-            margin={{
-              top: 5,
-              right: 10,
-              left: 10,
-              bottom: 0,
-            }}
-          >
-            <Line
-              type="monotone"
-              strokeWidth={2}
-              dataKey="revenue"
-              stroke="var(--primary)"
-              activeDot={{
-                r: 6,
-              }}
-            />
-          </LineChart>
-        </ChartContainer>
       </CardContent>
     </Card>
   );

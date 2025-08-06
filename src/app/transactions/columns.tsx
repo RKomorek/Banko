@@ -2,15 +2,14 @@ import { ColumnDef } from "@tanstack/react-table";
 import { formatCurrencyBRL } from "@/lib/formatters";
 import { ITransaction } from "@/interfaces/transaction.interface";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
-import ActionsColumnsTransactions from "@/components/actionsColumns.tsx/actionsColumnsTransactions";
+import { ArrowUpDown, Paperclip, Receipt, File, FileText } from "lucide-react";
 import { Icons } from "@/components/ui/icons";
+import { TransactionReceipt } from "@/components/transactions/transaction-receipt.component";
+import { Badge } from "@/components/ui/badge";
+import ActionsColumnsTransactions from "@/components/actionsColumns/actionsColumnsTransactions";
 
-export function getTransactionColumns(
-  onTransactionDeleted: () => Promise<void>,
-  onTransactionUpdated: () => Promise<void>
-): ColumnDef<ITransaction>[] {
-  return [
+
+export const columns: ColumnDef<ITransaction>[] = [
   {
     accessorKey: "created_at",
     header: ({ column }) => {
@@ -101,13 +100,11 @@ export function getTransactionColumns(
       const movimentacao = row.getValue("movimentacao") as string;
       return (
         <span>
-          {/* {movimentacao === "entrada" ? "🔺" : "🔻"} */}
           {movimentacao.charAt(0).toUpperCase() + movimentacao.slice(1)}
         </span>
       );
     },
   },
-
   {
     accessorKey: "valor",
     header: ({ column }) => {
@@ -133,15 +130,73 @@ export function getTransactionColumns(
     },
   },
   {
+    accessorKey: "attachments",
+    header: "Anexos",
+    cell: ({ row }) => {
+      const attachments = row.original.transaction_attachments;
+      const hasAttachments = attachments && attachments.length > 0;
+      
+      if (!hasAttachments) {
+        return <span className="text-sm text-muted-foreground">-</span>;
+      }
+
+      return (
+        <div className="flex items-center gap-2">
+          {/* Preview da primeira imagem */}
+          {attachments.some(att => att.file_type.startsWith('image/')) && (
+            <div className="relative">
+              {attachments.find(att => att.file_type.startsWith('image/')) && (
+                <img
+                  src={attachments.find(att => att.file_type.startsWith('image/'))!.file_url}
+                  alt="Preview"
+                  className="h-8 w-8 rounded object-cover border"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              )}
+            </div>
+          )}
+          
+          {/* Badge com contagem */}
+          <Badge variant="secondary" className="flex items-center gap-1">
+            <Paperclip className="h-3 w-3" />
+            {attachments.length}
+          </Badge>
+          
+          {/* Ícones por tipo */}
+          <div className="flex items-center gap-1">
+            {attachments.map((attachment, index) => {
+              if (attachment.file_type.startsWith('image/')) {
+                return <File key={index} className="h-3 w-3 text-blue-500" />;
+              } else if (attachment.file_type === 'application/pdf') {
+                return <FileText key={index} className="h-3 w-3 text-red-500" />;
+              } else {
+                return <File key={index} className="h-3 w-3 text-gray-500" />;
+              }
+            })}
+          </div>
+        </div>
+      );
+    },
+  },
+  {
     id: "actions",
     header: "Ações",
     cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <TransactionReceipt transactionId={row.original.id!}>
+          <Button variant="outline" size="sm">
+            <Receipt className="h-4 w-4 mr-2" />
+            Recibo
+          </Button>
+        </TransactionReceipt>
         <ActionsColumnsTransactions
           row={row}
-          onTransactionDeleted={onTransactionDeleted}
-          onTransactionUpdated={onTransactionUpdated}
+          onTransactionDeleted={async () => {}}
+          onTransactionUpdated={async () => {}}
         />
-      ),
+      </div>
+    ),
   },
 ];
-}
